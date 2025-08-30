@@ -40,19 +40,19 @@ function M.setup(config)
                 local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
                 vim.ui.input({ prompt = prompt_message }, function(input)
                   if input and input:lower() == "y" then
-                    if vim.fn.exists(":Git") > 0 then
-                      vim.cmd("Git push")
-                    else
-                      vim.notify("Pushing commit...", vim.log.levels.INFO)
-                      vim.system({ "git", "push" }, {}, function(obj)
-                        vim.schedule(function()
-                          local output = obj.stdout or obj.stderr or ""
-                          if output ~= "" then
-                            vim.notify(vim.fn.trim(output), vim.log.levels.INFO)
-                          end
-                        end)
+                    -- if vim.fn.exists(":Git") > 0 then
+                    --   vim.cmd("Git push")
+                    -- else
+                    vim.notify("Pushing commit...", vim.log.levels.INFO)
+                    vim.system({ "git", "push" }, {}, function(obj)
+                      vim.schedule(function()
+                        local output = obj.stdout or obj.stderr or ""
+                        if output ~= "" then
+                          vim.notify(vim.fn.trim(output), vim.log.levels.INFO)
+                        end
                       end)
-                    end
+                    end)
+                    -- end
                   end
                 end)
               else
