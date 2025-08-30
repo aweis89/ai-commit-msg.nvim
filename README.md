@@ -2,11 +2,14 @@
 
 **AI-powered commit messages while you review your diff in your favorite editor.**
 
-A Neovim plugin that automatically generates commit messages using AI when you run `git commit -v`, letting you review your changes while the AI crafts the perfect commit message.
+A Neovim plugin that automatically generates commit messages using AI when you
+run `git commit -v`, letting you review your changes while the AI crafts the
+perfect commit message.
 
 ## Features
 
-- 🤖 Automatically generates commit messages using OpenAI API when you run `git commit -v`
+- 🤖 Automatically generates commit messages using OpenAI API when you run
+  `git commit -v`
 - 🎯 Works from terminal or within Neovim (using vim-fugitive)
 - 🔑 Uses `OPENAI_API_KEY` environment variable for authentication
 - ⚙️ Configurable model, temperature, and max tokens
@@ -71,7 +74,7 @@ use {
 export OPENAI_API_KEY="your-api-key-here"
 ```
 
-2. Configure Neovim as your Git editor:
+1. Configure Neovim as your Git editor:
 
 ```bash
 git config --global core.editor nvim
@@ -177,12 +180,14 @@ Git diff:
 The plugin works seamlessly whether you commit from the terminal or within Neovim:
 
 ### From Terminal
+
 ```bash
 git add .
 git commit -v  # Opens Neovim with diff visible, AI generates message while you review
 ```
 
 ### From within Neovim (using vim-fugitive)
+
 ```vim
 :Git add .
 :tab Git commit -v  " Opens in new tab, AI generates message while you review
@@ -194,15 +199,18 @@ git commit -v  # Opens Neovim with diff visible, AI generates message while you 
    - Runs `git diff --staged` to get your staged changes
    - Sends the diff to OpenAI's API with your configured prompt
    - Inserts the generated message into the commit buffer
-   - The `-v` flag shows the diff below the message, allowing you to review changes while the AI works
+   - The `-v` flag shows the diff below the message,
+   allowing you to review changes during commit generation
 
-2. If the buffer already has content (e.g., from a commit template), the AI-generated message is added as comments below for reference.
+2. If the buffer already has content (e.g., from a commit template),
+the AI-generated message is added as comments below for reference.
 
 3. After you save and close the commit buffer, the plugin:
    - Checks if the commit was successful (not cancelled or empty)
    - If successful and `auto_push_prompt` is enabled, prompts you to push the commit
 
 **Note:** This requires Neovim to be your Git editor. Set it with:
+
 ```bash
 git config --global core.editor nvim
 ```
@@ -219,7 +227,8 @@ git config --global core.editor nvim
 - The plugin uses the OpenAI Chat Completions API directly
 - Lower temperature values (0.1-0.3) produce more consistent commit messages
 - Higher temperature values (0.5-0.8) produce more creative variations
-- The `gpt-5-nano` model (default) provides high-quality commit messages with reasoning capabilities
+- The `gpt-5-nano` model (default) provides high-quality commit messages with
+  reasoning capabilities
 - The `gpt-4o-mini` model is fast and cost-effective for commit messages
 - Consider using `gpt-4o` for complex changes that need more detailed analysis
 - If you don't specify `max_tokens`, the model will use its default limit
