@@ -43,8 +43,15 @@ function M.setup(config)
                     -- if vim.fn.exists(":Git") > 0 then
                     --   vim.cmd("Git push")
                     -- else
-                    vim.notify("ai-commit-msg.nvim: Pushing commit...", vim.log.levels.INFO)
-                    vim.fn.system("git push")
+                    vim.notify("Pushing commit...", vim.log.levels.INFO)
+                    vim.system({ "git", "push" }, {}, function(obj)
+                      vim.schedule(function()
+                        local output = obj.stdout or obj.stderr or ""
+                        if output ~= "" then
+                          vim.notify(vim.fn.trim(output), vim.log.levels.INFO)
+                        end
+                      end)
+                    end)
                     -- end
                   end
                 end)
