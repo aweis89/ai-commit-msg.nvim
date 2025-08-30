@@ -12,7 +12,7 @@ function M.setup(config)
     pattern = "COMMIT_EDITMSG",
     callback = function(arg)
       vim.notify("ai-commit-msg.nvim: COMMIT_EDITMSG buffer detected", vim.log.levels.DEBUG)
-      
+
       -- Setup keymaps
       if config.keymaps.quit then
         vim.keymap.set("n", config.keymaps.quit, ":w | bd<CR>", {
@@ -27,7 +27,7 @@ function M.setup(config)
       if config.auto_push_prompt then
         -- Store the HEAD commit before potential commit
         local head_before = vim.fn.trim(vim.fn.system("git rev-parse HEAD 2>/dev/null"))
-        
+
         vim.api.nvim_create_autocmd("BufDelete", {
           group = vim.api.nvim_create_augroup(augroup_name .. "_push", { clear = true }),
           buffer = arg.buf,
@@ -35,18 +35,26 @@ function M.setup(config)
             vim.defer_fn(function()
               -- Check if a new commit was actually created
               local head_after = vim.fn.trim(vim.fn.system("git rev-parse HEAD 2>/dev/null"))
-              
+
               -- Only prompt if HEAD changed (meaning a commit was made)
               if head_after ~= head_before and head_after ~= "" then
                 local branch_name = vim.fn.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
                 local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
                 vim.ui.input({ prompt = prompt_message }, function(input)
                   if input and input:lower() == "y" then
-                    vim.cmd("Git push")
+                    -- Check if Git command exists (vim-fugitive), otherwise use system git
+                    if vim.fn.exists(":Git") > 0 then
+                      vim.cmd("Git push")
+                    else
+                      vim.fn.system("git push")
+                    end
                   end
                 end)
               else
-                vim.notify("ai-commit-msg.nvim: No commit was created (empty message or cancelled)", vim.log.levels.DEBUG)
+                vim.notify(
+                  "ai-commit-msg.nvim: No commit was created (empty message or cancelled)",
+                  vim.log.levels.DEBUG
+                )
               end
             end, 100)
           end,
