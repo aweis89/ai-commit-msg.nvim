@@ -21,11 +21,11 @@ A Neovim plugin that automatically generates commit messages using AI when you r
 ```lua
 {
   "aweis89/ai-commit-msg.nvim",
-  config = function()
-    require("ai_commit_msg").setup({
-      -- your configuration
-    })
-  end,
+  ft = "gitcommit",
+  config = true,
+  opts = {
+    -- your configuration options here
+  },
 }
 ```
 
@@ -42,11 +42,11 @@ A Neovim plugin that automatically generates commit messages using AI when you r
 },
 {
   "aweis89/ai-commit-msg.nvim",
-  config = function()
-    require("ai_commit_msg").setup({
-      -- your configuration
-    })
-  end,
+  ft = "gitcommit",
+  config = true,
+  opts = {
+    -- your configuration options here
+  },
 }
 ```
 
