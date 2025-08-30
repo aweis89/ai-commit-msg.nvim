@@ -38,7 +38,7 @@ local function call_openai_api(config, diff, callback)
   vim.notify("ai-commit-msg.nvim: Prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
   
   local payload = vim.json.encode({
-    model = config.model or "gpt-4o-mini",
+    model = config.model or "gpt-5-nano",
     messages = {
       {
         role = "system",
@@ -49,8 +49,7 @@ local function call_openai_api(config, diff, callback)
         content = prompt
       }
     },
-    temperature = config.temperature or 0.3,
-    max_tokens = config.max_tokens or 500
+    max_completion_tokens = config.max_tokens
   })
 
   local curl_args = {
@@ -81,6 +80,9 @@ local function call_openai_api(config, diff, callback)
       return
     end
 
+    -- Debug: log the full response structure
+    vim.notify("ai-commit-msg.nvim: Full API response: " .. vim.inspect(response), vim.log.levels.DEBUG)
+    
     if response.choices and response.choices[1] and response.choices[1].message then
       local commit_msg = response.choices[1].message.content
       -- Clean up the message (remove markdown code blocks if present)

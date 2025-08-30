@@ -70,6 +70,7 @@ function M.setup(config)
               vim.api.nvim_buf_set_lines(arg.buf, 2, 2, false, commented_msg_lines)
             end
           end)
+        else
         end
       end)
     end,
