@@ -3,8 +3,6 @@ local augroup_name = "ai_commit_msg"
 local augroup = nil
 
 function M.setup(config)
-  M.disable()
-
   augroup = vim.api.nvim_create_augroup(augroup_name, { clear = true })
 
   vim.api.nvim_create_autocmd("BufWinEnter", {
@@ -91,12 +89,7 @@ function M.disable()
     augroup = nil
   end
 
-  local push_group_exists, push_group = pcall(vim.api.nvim_get_autocmds, {
-    group = augroup_name .. "_push",
-  })
-  if push_group_exists and #push_group > 0 then
-    pcall(vim.api.nvim_del_augroup_by_name, augroup_name .. "_push")
-  end
+  pcall(vim.api.nvim_del_augroup_by_name, augroup_name .. "_push")
 end
 
 return M
