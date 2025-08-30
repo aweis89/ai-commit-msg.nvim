@@ -40,7 +40,6 @@ function M.setup(config)
                 local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
                 vim.ui.input({ prompt = prompt_message }, function(input)
                   if input and input:lower() == "y" then
-                    -- Check if Git command exists (vim-fugitive), otherwise use system git
                     -- if vim.fn.exists(":Git") > 0 then
                     --   vim.cmd("Git push")
                     -- else
