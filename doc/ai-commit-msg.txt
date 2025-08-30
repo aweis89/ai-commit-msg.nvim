@@ -1,22 +1,22 @@
-*my-template-docs.txt*      For Neovim >= 0.8.0      Last change: 2025 July 09
+*ai-commit-msg.txt*      For Neovim >= 0.8.0      Last change: 2025 July 09
 
 ==============================================================================
-Table of Contents                         *my-template-docs-table-of-contents*
+Table of Contents                         *ai-commit-msg-table-of-contents*
 
-1. A Neovim Plugin Template        |my-template-docs-a-neovim-plugin-template|
-  - Using it              |my-template-docs-a-neovim-plugin-template-using-it|
-  - Features and structure|my-template-docs-a-neovim-plugin-template-features-and-structure|
-2. Links                                              |my-template-docs-links|
+1. A Neovim Plugin Template        |ai-commit-msg-a-neovim-plugin-template|
+  - Using it              |ai-commit-msg-a-neovim-plugin-template-using-it|
+  - Features and structure|ai-commit-msg-a-neovim-plugin-template-features-and-structure|
+2. Links                                              |ai-commit-msg-links|
 
 ==============================================================================
-1. A Neovim Plugin Template        *my-template-docs-a-neovim-plugin-template*
+1. A Neovim Plugin Template        *ai-commit-msg-a-neovim-plugin-template*
 
 
 
 A template repository for Neovim plugins.
 
 
-USING IT                  *my-template-docs-a-neovim-plugin-template-using-it*
+USING IT                  *ai-commit-msg-a-neovim-plugin-template-using-it*
 
 Via `gh`
 
@@ -31,7 +31,7 @@ Click on `Use this template`
 
 
 
-FEATURES AND STRUCTURE*my-template-docs-a-neovim-plugin-template-features-and-structure*
+FEATURES AND STRUCTURE*ai-commit-msg-a-neovim-plugin-template-features-and-structure*
 
 - 100% Lua
 - Github actions for:
@@ -46,21 +46,21 @@ PLUGIN STRUCTURE ~
 >
     .
     ├── lua
-    │   ├── plugin_name
+    │   ├── ai_commit_msg
     │   │   └── module.lua
-    │   └── plugin_name.lua
+    │   └── ai_commit_msg.lua
     ├── Makefile
     ├── plugin
-    │   └── plugin_name.lua
+    │   └── ai_commit_msg.lua
     ├── README.md
     ├── tests
     │   ├── minimal_init.lua
-    │   └── plugin_name
-    │       └── plugin_name_spec.lua
+    │   └── ai_commit_msg
+    │       └── ai_commit_msg_spec.lua
 <
 
 ==============================================================================
-2. Links                                              *my-template-docs-links*
+2. Links                                              *ai-commit-msg-links*
 
 1. *GitHub Workflow Status*: https://img.shields.io/github/actions/workflow/status/ellisonleao/nvim-plugin-template/lint-test.yml?branch=main&style=for-the-badge
 2. *Lua*: https://img.shields.io/badge/Made%20with%20Lua-blueviolet.svg?style=for-the-badge&logo=lua
