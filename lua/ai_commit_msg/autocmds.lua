@@ -41,11 +41,11 @@ function M.setup(config)
                 vim.ui.input({ prompt = prompt_message }, function(input)
                   if input and input:lower() == "y" then
                     -- Check if Git command exists (vim-fugitive), otherwise use system git
-                    if vim.fn.exists(":Git") > 0 then
-                      vim.cmd("Git push")
-                    else
-                      vim.fn.system("git push")
-                    end
+                    -- if vim.fn.exists(":Git") > 0 then
+                    --   vim.cmd("Git push")
+                    -- else
+                    vim.fn.system("git push")
+                    -- end
                   end
                 end)
               else
