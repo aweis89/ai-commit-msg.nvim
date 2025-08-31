@@ -1,5 +1,19 @@
 local M = {}
 
+-- Default prompts used by all providers
+local DEFAULT_PROMPT = [[Generate a conventional commit message for the staged git changes.
+
+Requirements:
+- Use conventional commit format: <type>(<scope>): <description>
+- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+- Keep the first line under 72 characters
+- Respond ONLY with the commit message, no explanations or markdown
+
+Git diff of staged changes:
+{diff}]]
+
+local DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant that generates conventional commit messages based on git diffs."
+
 ---@class ProviderConfig
 ---@field model string Model to use for this provider
 ---@field temperature number Temperature for the model (0.0 to 1.0)
@@ -29,37 +43,19 @@ local default_config = {
   },
   providers = {
     openai = {
-      model = "gpt-5-nano",
+      model = "gpt-5-mini",
       temperature = 0.3,
       max_tokens = nil,
       reasoning_effort = "minimal",
-      prompt = [[Generate a conventional commit message for the staged git changes.
-
-Requirements:
-- Use conventional commit format: <type>(<scope>): <description>
-- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-- Keep the first line under 72 characters
-- Respond ONLY with the commit message, no explanations or markdown
-
-Git diff of staged changes:
-{diff}]],
-      system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+      prompt = DEFAULT_PROMPT,
+      system_prompt = DEFAULT_SYSTEM_PROMPT,
     },
     anthropic = {
       model = "claude-3-5-haiku-20241022",
       temperature = 0.3,
       max_tokens = 1000,
-      prompt = [[Generate a conventional commit message for the staged git changes.
-
-Requirements:
-- Use conventional commit format: <type>(<scope>): <description>
-- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-- Keep the first line under 72 characters
-- Respond ONLY with the commit message, no explanations or markdown
-
-Git diff of staged changes:
-{diff}]],
-      system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+      prompt = DEFAULT_PROMPT,
+      system_prompt = DEFAULT_SYSTEM_PROMPT,
     },
   },
 }
