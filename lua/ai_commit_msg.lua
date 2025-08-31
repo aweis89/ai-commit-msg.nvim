@@ -1,18 +1,20 @@
 local M = {}
 
 -- Default prompts used by all providers
-local DEFAULT_PROMPT = [[Generate a conventional commit message for the staged git changes.
+local DEFAULT_PROMPT = [[Generate a concise conventional commit message for the staged git changes.
 
 Requirements:
 - Use conventional commit format: <type>(<scope>): <description>
 - Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-- Keep the first line under 72 characters
-- Respond ONLY with the commit message, no explanations or markdown
+- Keep under 72 characters
+- Focus on the main change, ignore implementation details
+- Respond ONLY with the commit message, no explanations
 
 Git diff of staged changes:
 {diff}]]
 
-local DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant that generates conventional commit messages based on git diffs."
+local DEFAULT_SYSTEM_PROMPT =
+  "You are a helpful assistant that generates conventional commit messages based on git diffs."
 
 ---@class ProviderConfig
 ---@field model string Model to use for this provider
@@ -39,7 +41,7 @@ local default_config = {
   auto_push_prompt = true,
   spinner = true,
   notifications = true,
-  context_lines = 100,
+  context_lines = 10,
   keymaps = {
     quit = "q", -- Set to false to disable
   },

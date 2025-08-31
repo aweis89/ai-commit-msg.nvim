@@ -107,8 +107,8 @@ require("ai_commit_msg").setup({
   -- Show notifications
   notifications = true,
   
-  -- Number of surrounding lines to include in git diff (default: 100)
-  context_lines = 100,
+  -- Number of surrounding lines to include in git diff (default: 10)
+  context_lines = 10,
   
   -- Keymaps for commit buffer
   keymaps = {
@@ -122,13 +122,14 @@ require("ai_commit_msg").setup({
       temperature = 0.3,
       max_tokens = nil,  -- Uses model default
       reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high"
-      prompt = [[Generate a conventional commit message for the staged git changes.
+      prompt = [[Generate a concise conventional commit message for the staged git changes.
 
 Requirements:
 - Use conventional commit format: <type>(<scope>): <description>
 - Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-- Keep the first line under 72 characters
-- Respond ONLY with the commit message, no explanations or markdown
+- Keep under 72 characters
+- Focus on the main change, ignore implementation details
+- Respond ONLY with the commit message, no explanations
 
 Git diff of staged changes:
 {diff}]],
@@ -139,13 +140,14 @@ Git diff of staged changes:
       model = "claude-3-5-haiku-20241022",
       temperature = 0.3,
       max_tokens = 1000,  -- Required for Anthropic API
-      prompt = [[Generate a conventional commit message for the staged git changes.
+      prompt = [[Generate a concise conventional commit message for the staged git changes.
 
 Requirements:
 - Use conventional commit format: <type>(<scope>): <description>
 - Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-- Keep the first line under 72 characters
-- Respond ONLY with the commit message, no explanations or markdown
+- Keep under 72 characters
+- Focus on the main change, ignore implementation details
+- Respond ONLY with the commit message, no explanations
 
 Git diff of staged changes:
 {diff}]],
