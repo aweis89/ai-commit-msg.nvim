@@ -32,8 +32,6 @@ function M.call_api(config, diff, callback)
 
   vim.notify("ai-commit-msg.nvim: Prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
 
-  vim.notify("using model " .. config.model)
-
   local payload_data = {
     model = config.model,
     messages = {
