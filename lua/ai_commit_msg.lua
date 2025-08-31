@@ -8,6 +8,7 @@ local M = {}
 ---@field max_tokens number|nil Maximum tokens in the response
 ---@field prompt string Prompt to send to the AI
 ---@field system_prompt string System prompt that defines the AI's role and behavior
+---@field reasoning_effort string|nil Reasoning effort for models that support it ("minimal", "medium", "high")
 ---@field auto_push_prompt boolean Whether to prompt for push after commit
 ---@field spinner boolean Whether to show a spinner while generating
 ---@field notifications boolean Whether to show notifications
@@ -17,7 +18,7 @@ local M = {}
 local default_config = {
   enabled = true,
   provider = "openai",
-  model = "gpt-4.1-nano",
+  model = "gpt-5-nano",
   temperature = 0.3,
   max_tokens = nil,
   prompt = [[Generate a conventional commit message for the staged git changes.
@@ -31,6 +32,7 @@ Requirements:
 Git diff of staged changes:
 {diff}]],
   system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+  reasoning_effort = "minimal",
   auto_push_prompt = true,
   spinner = true,
   notifications = true,

@@ -1,5 +1,16 @@
 local M = {}
 
+-- Models that support reasoning_effort parameter
+local REASONING_EFFORT_MODELS = {
+  ["gpt-5-nano"] = true,
+  ["gpt-5-mini"] = true,
+  ["gpt-5"] = true,
+}
+
+local function model_supports_reasoning_effort(model)
+  return REASONING_EFFORT_MODELS[model] or model:match("^gpt%-5")
+end
+
 function M.call_api(config, diff, callback)
   local api_key = os.getenv("OPENAI_API_KEY")
   if not api_key or api_key == "" then
@@ -21,7 +32,9 @@ function M.call_api(config, diff, callback)
 
   vim.notify("ai-commit-msg.nvim: Prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
 
-  local payload = vim.json.encode({
+  vim.notify("using model " .. config.model)
+
+  local payload_data = {
     model = config.model,
     messages = {
       {
@@ -34,7 +47,14 @@ function M.call_api(config, diff, callback)
       },
     },
     max_completion_tokens = config.max_tokens,
-  })
+  }
+
+  -- Only add reasoning_effort for supported models
+  if config.reasoning_effort and model_supports_reasoning_effort(config.model) then
+    payload_data.reasoning_effort = config.reasoning_effort
+  end
+
+  local payload = vim.json.encode(payload_data)
 
   local curl_args = {
     "curl",

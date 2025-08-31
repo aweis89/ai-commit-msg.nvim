@@ -97,7 +97,7 @@ require("ai_commit_msg").setup({
   provider = "openai",
   
   -- Model to use
-  model = "gpt-4.1-nano",  -- OpenAI: "gpt-4o", "gpt-4o-mini", "gpt-3.5-turbo", etc.
+  model = "gpt-4.1-nano",  -- OpenAI default is "gpt-5-nano"
                            -- Anthropic: "claude-3-5-sonnet-20241022", "claude-3-5-haiku-latest", etc.
   
   -- Temperature for the model (0.0 = deterministic, 1.0 = creative)
@@ -105,6 +105,9 @@ require("ai_commit_msg").setup({
   
   -- Maximum tokens in the response (optional, uses model default if not set)
   max_tokens = nil,
+  
+  -- Reasoning effort for supported models (gpt-5* models only)
+  reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high"
   
   -- The prompt to send to the AI
   -- {diff} will be replaced with the git diff
@@ -137,12 +140,12 @@ Git diff of staged changes:
 
 ## Example Configurations
 
-### Using OpenAI GPT-5 nano
+### Using OpenAI GPT-4.1 nano
 
 ```lua
 require("ai_commit_msg").setup({
   provider = "openai",
-  model = "gpt-5-nano",
+  model = "gpt-4.1-nano",
   temperature = 0.5,
   max_tokens = 1000,
 })
@@ -231,7 +234,7 @@ git config --global core.editor nvim
 - The plugin uses OpenAI Chat Completions API and Anthropic Messages API directly
 - Lower temperature values (0.1-0.3) produce more consistent commit messages
 - Higher temperature values (0.5-0.8) produce more creative variations
-- The default model `gpt-4.1-nano` is chosen for low latency, especially compared to gpt-5
+- The default model `gpt-5-nano` with minimal reasoning effort is chosen for speed and efficiency
 - If you don't specify `max_tokens`, the model will use its default limit
 - For Anthropic models, `max_tokens` is required by the API (defaults to 1000 if not specified)
 
