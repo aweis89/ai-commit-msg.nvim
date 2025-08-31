@@ -88,7 +88,7 @@ require("ai_commit_msg").setup({
   enabled = true,
   
   -- OpenAI model to use
-  model = "gpt-4.1-nano",  -- or "gpt-4o", "gpt-4o-mini", "gpt-3.5-turbo", etc.
+  model = "gpt-4.1-nano",  -- or "gpt-4o", "gpt-4o-mini", "gpt-5-nano", etc.
   
   -- Temperature for the model (0.0 = deterministic, 1.0 = creative)
   temperature = 0.3,
