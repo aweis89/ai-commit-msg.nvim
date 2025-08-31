@@ -68,10 +68,16 @@ use {
 
 ## Prerequisites
 
-1. Set your OpenAI API key as an environment variable:
+1. Set your AI provider's API key as an environment variable:
 
+**For OpenAI:**
 ```bash
 export OPENAI_API_KEY="your-api-key-here"
+```
+
+**For Anthropic:**
+```bash
+export ANTHROPIC_API_KEY="your-api-key-here"
 ```
 
 1. Configure Neovim as your Git editor:
@@ -87,8 +93,12 @@ require("ai_commit_msg").setup({
   -- Enable/disable the plugin
   enabled = true,
   
-  -- OpenAI model to use
-  model = "gpt-4.1-nano",  -- or "gpt-4o", "gpt-4o-mini", "gpt-5-nano", etc.
+  -- AI provider to use ("openai" or "anthropic")
+  provider = "openai",
+  
+  -- Model to use
+  model = "gpt-4.1-nano",  -- OpenAI: "gpt-4o", "gpt-4o-mini", "gpt-3.5-turbo", etc.
+                           -- Anthropic: "claude-3-5-sonnet-20241022", "claude-3-5-haiku-latest", etc.
   
   -- Temperature for the model (0.0 = deterministic, 1.0 = creative)
   temperature = 0.3,
@@ -127,33 +137,25 @@ Git diff of staged changes:
 
 ## Example Configurations
 
-### Using GPT-4o for more detailed messages
+### Using OpenAI GPT-5 nano
 
 ```lua
 require("ai_commit_msg").setup({
-  model = "gpt-4o",
+  provider = "openai",
+  model = "gpt-5-nano",
   temperature = 0.5,
   max_tokens = 1000,
 })
 ```
 
-### Using GPT-4o-mini for cost-effective messages
+### Using Anthropic Claude
 
 ```lua
 require("ai_commit_msg").setup({
-  model = "gpt-4o-mini",
+  provider = "anthropic",
+  model = "claude-3-5-haiku-latest",
   temperature = 0.3,
-  max_tokens = 500,
-})
-```
-
-### Using GPT-3.5-turbo for faster responses
-
-```lua
-require("ai_commit_msg").setup({
-  model = "gpt-3.5-turbo",
-  temperature = 0.2,
-  max_tokens = 500,
+  max_tokens = 1000,
 })
 ```
 
@@ -218,20 +220,20 @@ git config --global core.editor nvim
 ## Requirements
 
 - Neovim >= 0.7.0
-- OpenAI API key (set as `OPENAI_API_KEY` environment variable)
+- AI provider API key:
+  - OpenAI: Set `OPENAI_API_KEY` environment variable
+  - Anthropic: Set `ANTHROPIC_API_KEY` environment variable
 - Git
 - curl (for making API requests)
 
 ## Tips
 
-- The plugin uses the OpenAI Chat Completions API directly
+- The plugin uses OpenAI Chat Completions API and Anthropic Messages API directly
 - Lower temperature values (0.1-0.3) produce more consistent commit messages
 - Higher temperature values (0.5-0.8) produce more creative variations
-- The `gpt-4.1-nano` model (default) is optimized for latency and speed
-- The `gpt-5-nano` model provides high-quality commit messages with reasoning capabilities but is much slower
-- The `gpt-4o-mini` model is fast and cost-effective for commit messages
-- Consider using `gpt-4o` for complex changes that need more detailed analysis
+- The default model `gpt-4.1-nano` is chosen for low latency, especially compared to gpt-5
 - If you don't specify `max_tokens`, the model will use its default limit
+- For Anthropic models, `max_tokens` is required by the API (defaults to 1000 if not specified)
 
 ## License
 
