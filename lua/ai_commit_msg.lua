@@ -2,9 +2,10 @@ local M = {}
 
 ---@class AiCommitMsgConfig
 ---@field enabled boolean Whether to enable the plugin
----@field model string OpenAI model to use (e.g. "gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo")
+---@field provider string AI provider to use ("openai" or "anthropic")
+---@field model string Model to use (e.g. "gpt-4o-mini", "claude-3-5-sonnet-20241022")
 ---@field temperature number Temperature for the model (0.0 to 1.0)
----@field max_tokens number Maximum tokens in the response
+---@field max_tokens number|nil Maximum tokens in the response
 ---@field prompt string Prompt to send to the AI
 ---@field auto_push_prompt boolean Whether to prompt for push after commit
 ---@field spinner boolean Whether to show a spinner while generating
@@ -14,6 +15,7 @@ local M = {}
 ---@type AiCommitMsgConfig
 local default_config = {
   enabled = true,
+  provider = "openai",
   model = "gpt-4.1-nano",
   temperature = 0.3,
   max_tokens = nil,
