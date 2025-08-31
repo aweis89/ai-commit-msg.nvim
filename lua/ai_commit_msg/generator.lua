@@ -34,33 +34,37 @@ local function call_openai_api(config, diff, callback)
     -- If no {diff} placeholder, append the diff
     prompt = config.prompt .. "\n\n" .. diff
   end
-  
+
   vim.notify("ai-commit-msg.nvim: Prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
-  
+
   local payload = vim.json.encode({
-    model = config.model or "gpt-5-nano",
+    model = config.model,
     messages = {
       {
         role = "system",
-        content = "You are a helpful assistant that generates conventional commit messages based on git diffs."
+        content = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
       },
       {
         role = "user",
-        content = prompt
-      }
+        content = prompt,
+      },
     },
-    max_completion_tokens = config.max_tokens
+    max_completion_tokens = config.max_tokens,
   })
 
   local curl_args = {
     "curl",
-    "-X", "POST",
+    "-X",
+    "POST",
     "https://api.openai.com/v1/chat/completions",
-    "-H", "Content-Type: application/json",
-    "-H", "Authorization: Bearer " .. api_key,
-    "-d", payload,
+    "-H",
+    "Content-Type: application/json",
+    "-H",
+    "Authorization: Bearer " .. api_key,
+    "-d",
+    payload,
     "--silent",
-    "--show-error"
+    "--show-error",
   }
 
   vim.system(curl_args, {}, function(res)
@@ -82,7 +86,7 @@ local function call_openai_api(config, diff, callback)
 
     -- Debug: log the full response structure
     vim.notify("ai-commit-msg.nvim: Full API response: " .. vim.inspect(response), vim.log.levels.DEBUG)
-    
+
     if response.choices and response.choices[1] and response.choices[1].message then
       local commit_msg = response.choices[1].message.content
       -- Clean up the message (remove markdown code blocks if present)
@@ -97,7 +101,7 @@ end
 
 function M.generate(config, callback)
   vim.notify("ai-commit-msg.nvim: Starting generation", vim.log.levels.DEBUG)
-  
+
   local spinner_timer
   local notif_id = "ai-commit-msg"
 
@@ -131,7 +135,7 @@ function M.generate(config, callback)
         spinner_timer:close()
       end
       spinner_timer = nil
-      
+
       vim.schedule(function()
         local error_msg = "Failed to get git diff: " .. (diff_res.stderr or "Unknown error")
         vim.notify("ai-commit-msg.nvim: " .. error_msg, vim.log.levels.ERROR)
@@ -158,7 +162,7 @@ function M.generate(config, callback)
         spinner_timer:close()
       end
       spinner_timer = nil
-      
+
       vim.schedule(function()
         local error_msg = "No staged changes to commit"
         vim.notify("ai-commit-msg.nvim: " .. error_msg, vim.log.levels.WARN)
