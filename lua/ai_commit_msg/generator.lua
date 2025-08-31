@@ -101,7 +101,7 @@ function M.generate(config, callback)
     end
 
     vim.notify("ai-commit-msg.nvim: Calling AI API", vim.log.levels.DEBUG)
-    
+
     local start_time = vim.uv.hrtime()
 
     call_api(config, diff, function(success, result)
@@ -129,7 +129,7 @@ function M.generate(config, callback)
         else
           local duration = (vim.uv.hrtime() - start_time) / 1e9
           local duration_str = duration < 1 and string.format("%.1fs", duration) or string.format("%.0fs", duration)
-          
+
           vim.notify("ai-commit-msg.nvim: Generated message: " .. result:sub(1, 50) .. "...", vim.log.levels.DEBUG)
           -- Clear spinner notification with success message
           if config.notifications then
