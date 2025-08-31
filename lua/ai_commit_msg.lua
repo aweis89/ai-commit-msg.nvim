@@ -7,6 +7,7 @@ local M = {}
 ---@field temperature number Temperature for the model (0.0 to 1.0)
 ---@field max_tokens number|nil Maximum tokens in the response
 ---@field prompt string Prompt to send to the AI
+---@field system_prompt string System prompt that defines the AI's role and behavior
 ---@field auto_push_prompt boolean Whether to prompt for push after commit
 ---@field spinner boolean Whether to show a spinner while generating
 ---@field notifications boolean Whether to show notifications
@@ -29,6 +30,7 @@ Requirements:
 
 Git diff of staged changes:
 {diff}]],
+  system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
   auto_push_prompt = true,
   spinner = true,
   notifications = true,

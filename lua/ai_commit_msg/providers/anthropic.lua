@@ -32,7 +32,7 @@ function M.call_api(config, diff, callback)
         content = prompt,
       },
     },
-    system = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+    system = config.system_prompt,
   })
 
   local curl_args = {

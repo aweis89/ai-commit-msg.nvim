@@ -26,7 +26,7 @@ function M.call_api(config, diff, callback)
     messages = {
       {
         role = "system",
-        content = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+        content = config.system_prompt,
       },
       {
         role = "user",
