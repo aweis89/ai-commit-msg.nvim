@@ -88,7 +88,7 @@ require("ai_commit_msg").setup({
   enabled = true,
   
   -- OpenAI model to use
-  model = "gpt-5-nano",  -- or "gpt-4o", "gpt-4o-mini", "gpt-3.5-turbo", etc.
+  model = "gpt-4.1-nano",  -- or "gpt-4o", "gpt-4o-mini", "gpt-3.5-turbo", etc.
   
   -- Temperature for the model (0.0 = deterministic, 1.0 = creative)
   temperature = 0.3,
@@ -227,8 +227,8 @@ git config --global core.editor nvim
 - The plugin uses the OpenAI Chat Completions API directly
 - Lower temperature values (0.1-0.3) produce more consistent commit messages
 - Higher temperature values (0.5-0.8) produce more creative variations
-- The `gpt-5-nano` model (default) provides high-quality commit messages with
-  reasoning capabilities
+- The `gpt-4.1-nano` model (default) is optimized for latency and speed
+- The `gpt-5-nano` model provides high-quality commit messages with reasoning capabilities but is much slower
 - The `gpt-4o-mini` model is fast and cost-effective for commit messages
 - Consider using `gpt-4o` for complex changes that need more detailed analysis
 - If you don't specify `max_tokens`, the model will use its default limit
