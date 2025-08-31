@@ -29,6 +29,7 @@ local DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant that generates conven
 ---@field auto_push_prompt boolean Whether to prompt for push after commit
 ---@field spinner boolean Whether to show a spinner while generating
 ---@field notifications boolean Whether to show notifications
+---@field context_lines number Number of surrounding lines to include in git diff
 ---@field keymaps table<string, string|false> Keymaps for commit buffer
 
 ---@type AiCommitMsgConfig
@@ -38,6 +39,7 @@ local default_config = {
   auto_push_prompt = true,
   spinner = true,
   notifications = true,
+  context_lines = 100,
   keymaps = {
     quit = "q", -- Set to false to disable
   },
@@ -98,6 +100,7 @@ function M.generate_commit_message(callback)
   local complete_config = vim.tbl_deep_extend("force", active_config, {
     notifications = M.config.notifications,
     spinner = M.config.spinner,
+    context_lines = M.config.context_lines,
   })
   require("ai_commit_msg.generator").generate(complete_config, callback)
 end

@@ -46,7 +46,11 @@ function M.generate(config, callback)
   end
 
   -- Get git diff first
-  vim.system({ "git", "diff", "--staged" }, {}, function(diff_res)
+  local git_cmd = { "git", "diff", "--staged" }
+  if config.context_lines and type(config.context_lines) == "number" and config.context_lines >= 0 then
+    table.insert(git_cmd, "-U" .. config.context_lines)
+  end
+  vim.system(git_cmd, {}, function(diff_res)
     if diff_res.code ~= 0 then
       -- Stop spinner
       if spinner_timer and not spinner_timer:is_closing() then

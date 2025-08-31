@@ -105,6 +105,9 @@ require("ai_commit_msg").setup({
   -- Show notifications
   notifications = true,
   
+  -- Number of surrounding lines to include in git diff (default: 100)
+  context_lines = 100,
+  
   -- Keymaps for commit buffer
   keymaps = {
     quit = "q",  -- Set to false to disable
