@@ -8,8 +8,8 @@ perfect commit message.
 
 ## Features
 
-- 🤖 Automatically generates commit messages using OpenAI or Anthropic APIs when you run
-  `git commit -v`
+- 🤖 Automatically generates commit messages using OpenAI or Anthropic APIs
+  when you run `git commit -v`
 - 🎯 Works from terminal or within Neovim (using vim-fugitive)
 - 🔑 Uses `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` environment variables for authentication
 - ⚙️ Configurable model, temperature, and max tokens
@@ -71,11 +71,13 @@ use {
 1. Set your AI provider's API key as an environment variable:
 
 **For OpenAI:**
+
 ```bash
 export OPENAI_API_KEY="your-api-key-here"
 ```
 
 **For Anthropic:**
+
 ```bash
 export ANTHROPIC_API_KEY="your-api-key-here"
 ```
@@ -130,7 +132,8 @@ Requirements:
 
 Git diff of staged changes:
 {diff}]],
-      system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+      system_prompt = "You are a helpful assistant that generates "
+        .. "conventional commit messages based on git diffs.",
     },
     anthropic = {
       model = "claude-3-5-haiku-20241022",
@@ -146,7 +149,8 @@ Requirements:
 
 Git diff of staged changes:
 {diff}]],
-      system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+      system_prompt = "You are a helpful assistant that generates "
+        .. "conventional commit messages based on git diffs.",
     },
   },
 })
@@ -253,10 +257,12 @@ git config --global core.editor nvim
 - The plugin uses OpenAI Chat Completions API and Anthropic Messages API directly
 - Lower temperature values (0.1-0.3) produce more consistent commit messages
 - Higher temperature values (0.5-0.8) produce more creative variations
-- The default model `gpt-5-mini` with minimal reasoning effort is chosen for speed and efficiency
+- The default model `gpt-5-mini` with minimal reasoning effort is chosen
+  for speed and efficiency
 - Claude 3.5 Haiku is also a solid choice for commit message generation
 - If you don't specify `max_tokens`, the model will use its default limit
-- For Anthropic models, `max_tokens` is required by the API (defaults to 1000 if not specified)
+- For Anthropic models, `max_tokens` is required by the API
+  (defaults to 1000 if not specified)
 
 ## License
 
