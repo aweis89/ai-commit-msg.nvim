@@ -35,32 +35,32 @@ function M.setup(config)
               local head_after = vim.fn.trim(vim.fn.system("git rev-parse HEAD 2>/dev/null"))
 
               -- Only prompt if HEAD changed (meaning a commit was made)
-              if head_after ~= head_before and head_after ~= "" then
-                local branch_name = vim.fn.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
-                local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
-                vim.ui.input({ prompt = prompt_message }, function(input)
-                  if input and input:lower() == "y" then
-                    if vim.fn.exists(":Git") > 0 then
-                      vim.cmd("Git push")
-                    else
-                      vim.notify("Pushing commit...", vim.log.levels.INFO)
-                      vim.system({ "git", "push" }, {}, function(obj)
-                        vim.schedule(function()
-                          local output = obj.stdout or obj.stderr or ""
-                          if output ~= "" then
-                            vim.notify(vim.fn.trim(output), vim.log.levels.INFO)
-                          end
-                        end)
-                      end)
-                    end
-                  end
-                end)
-              else
+              if head_after == head_before or head_after == "" then
                 vim.notify(
                   "ai-commit-msg.nvim: No commit was created (empty message or cancelled)",
                   vim.log.levels.DEBUG
                 )
+                return
               end
+              local branch_name = vim.fn.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
+              local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
+              vim.ui.input({ prompt = prompt_message }, function(input)
+                if input and input:lower() == "y" then
+                  if vim.fn.exists(":Git") > 0 then
+                    vim.cmd("Git push")
+                  else
+                    vim.notify("Pushing commit...", vim.log.levels.INFO)
+                    vim.system({ "git", "push" }, {}, function(obj)
+                      vim.schedule(function()
+                        local output = obj.stdout or obj.stderr or ""
+                        if output ~= "" then
+                          vim.notify(vim.fn.trim(output), vim.log.levels.INFO)
+                        end
+                      end)
+                    end)
+                  end
+                end
+              end)
             end, 100)
           end,
         })
