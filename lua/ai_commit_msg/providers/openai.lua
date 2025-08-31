@@ -18,6 +18,11 @@ function M.call_api(config, diff, callback)
     return
   end
 
+  if not config.prompt then
+    callback(false, "No prompt configured for OpenAI provider")
+    return
+  end
+
   local prompt
   if config.prompt:find("{diff}", 1, true) then
     local before, after = config.prompt:match("^(.*)%{diff%}(.*)$")

@@ -96,32 +96,6 @@ require("ai_commit_msg").setup({
   -- AI provider to use ("openai" or "anthropic")
   provider = "openai",
   
-  -- Model to use
-  model = "gpt-4.1-nano",  -- OpenAI default is "gpt-5-nano"
-                           -- Anthropic: "claude-3-5-sonnet-20241022", "claude-3-5-haiku-latest", etc.
-  
-  -- Temperature for the model (0.0 = deterministic, 1.0 = creative)
-  temperature = 0.3,
-  
-  -- Maximum tokens in the response (optional, uses model default if not set)
-  max_tokens = nil,
-  
-  -- Reasoning effort for supported models (gpt-5* models only)
-  reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high"
-  
-  -- The prompt to send to the AI
-  -- {diff} will be replaced with the git diff
-  prompt = [[Generate a conventional commit message for the staged git changes.
-
-Requirements:
-- Use conventional commit format: <type>(<scope>): <description>
-- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-- Keep the first line under 72 characters
-- Respond ONLY with the commit message, no explanations or markdown
-
-Git diff of staged changes:
-{diff}]],
-  
   -- Whether to prompt for push after commit
   auto_push_prompt = true,
   
@@ -135,30 +109,68 @@ Git diff of staged changes:
   keymaps = {
     quit = "q",  -- Set to false to disable
   },
+  
+  -- Provider-specific configurations
+  providers = {
+    openai = {
+      model = "gpt-5-nano",
+      temperature = 0.3,
+      max_tokens = nil,  -- Uses model default
+      reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high"
+      prompt = [[Generate a conventional commit message for the staged git changes.
+
+Requirements:
+- Use conventional commit format: <type>(<scope>): <description>
+- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+- Keep the first line under 72 characters
+- Respond ONLY with the commit message, no explanations or markdown
+
+Git diff of staged changes:
+{diff}]],
+      system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+    },
+    anthropic = {
+      model = "claude-3-5-haiku-20241022",
+      temperature = 0.3,
+      max_tokens = 1000,  -- Required for Anthropic API
+      prompt = [[Generate a conventional commit message for the staged git changes.
+
+Requirements:
+- Use conventional commit format: <type>(<scope>): <description>
+- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+- Keep the first line under 72 characters
+- Respond ONLY with the commit message, no explanations or markdown
+
+Git diff of staged changes:
+{diff}]],
+      system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+    },
+  },
 })
 ```
 
 ## Example Configurations
 
-### Using OpenAI GPT-4.1 nano
-
-```lua
-require("ai_commit_msg").setup({
-  provider = "openai",
-  model = "gpt-4.1-nano",
-  temperature = 0.5,
-  max_tokens = 1000,
-})
-```
-
-### Using Anthropic Claude
+### Switch to Anthropic Claude
 
 ```lua
 require("ai_commit_msg").setup({
   provider = "anthropic",
-  model = "claude-3-5-haiku-latest",
-  temperature = 0.3,
-  max_tokens = 1000,
+})
+```
+
+### Customize OpenAI settings
+
+```lua
+require("ai_commit_msg").setup({
+  provider = "openai",
+  providers = {
+    openai = {
+      model = "gpt-4o-mini",
+      temperature = 0.5,
+      reasoning_effort = "medium",
+    },
+  },
 })
 ```
 
@@ -166,11 +178,15 @@ require("ai_commit_msg").setup({
 
 ```lua
 require("ai_commit_msg").setup({
-  prompt = [[Generate a commit message following Angular commit conventions.
+  providers = {
+    openai = {
+      prompt = [[Generate a commit message following Angular commit conventions.
 Include scope if applicable. Format: type(scope): description
 
 Git diff:
 {diff}]],
+    },
+  },
 })
 ```
 

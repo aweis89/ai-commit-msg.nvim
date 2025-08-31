@@ -1,12 +1,13 @@
 local M = {}
 
 function M.get_provider(config)
-  if config.provider == "openai" then
+  local provider_name = config.provider
+  if provider_name == "openai" then
     return require("ai_commit_msg.providers.openai")
-  elseif config.provider == "anthropic" then
+  elseif provider_name == "anthropic" then
     return require("ai_commit_msg.providers.anthropic")
   else
-    error("Unsupported provider: " .. tostring(config.provider))
+    error("Unsupported provider: " .. tostring(provider_name))
   end
 end
 

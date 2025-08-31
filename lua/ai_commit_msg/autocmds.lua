@@ -67,7 +67,7 @@ function M.setup(config)
       end
 
       -- Generate commit message
-      require("ai_commit_msg.generator").generate(config, function(success, message)
+      require("ai_commit_msg").generate_commit_message(function(success, message)
         if success and message then
           vim.schedule(function()
             local first_line_content = vim.api.nvim_buf_get_lines(arg.buf, 0, 1, false)[1]

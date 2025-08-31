@@ -1,14 +1,17 @@
 local M = {}
 
----@class AiCommitMsgConfig
----@field enabled boolean Whether to enable the plugin
----@field provider string AI provider to use ("openai" or "anthropic")
----@field model string Model to use (e.g. "gpt-4o-mini", "claude-3-5-sonnet-20241022")
+---@class ProviderConfig
+---@field model string Model to use for this provider
 ---@field temperature number Temperature for the model (0.0 to 1.0)
 ---@field max_tokens number|nil Maximum tokens in the response
 ---@field prompt string Prompt to send to the AI
 ---@field system_prompt string System prompt that defines the AI's role and behavior
 ---@field reasoning_effort string|nil Reasoning effort for models that support it ("minimal", "medium", "high")
+
+---@class AiCommitMsgConfig
+---@field enabled boolean Whether to enable the plugin
+---@field provider string AI provider to use ("openai" or "anthropic")
+---@field providers table<string, ProviderConfig> Provider-specific configurations
 ---@field auto_push_prompt boolean Whether to prompt for push after commit
 ---@field spinner boolean Whether to show a spinner while generating
 ---@field notifications boolean Whether to show notifications
@@ -18,10 +21,19 @@ local M = {}
 local default_config = {
   enabled = true,
   provider = "openai",
-  model = "gpt-5-nano",
-  temperature = 0.3,
-  max_tokens = nil,
-  prompt = [[Generate a conventional commit message for the staged git changes.
+  auto_push_prompt = true,
+  spinner = true,
+  notifications = true,
+  keymaps = {
+    quit = "q", -- Set to false to disable
+  },
+  providers = {
+    openai = {
+      model = "gpt-5-nano",
+      temperature = 0.3,
+      max_tokens = nil,
+      reasoning_effort = "minimal",
+      prompt = [[Generate a conventional commit message for the staged git changes.
 
 Requirements:
 - Use conventional commit format: <type>(<scope>): <description>
@@ -31,17 +43,44 @@ Requirements:
 
 Git diff of staged changes:
 {diff}]],
-  system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
-  reasoning_effort = "minimal",
-  auto_push_prompt = true,
-  spinner = true,
-  notifications = true,
-  keymaps = {
-    quit = "q", -- Set to false to disable
+      system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+    },
+    anthropic = {
+      model = "claude-3-5-haiku-20241022",
+      temperature = 0.3,
+      max_tokens = 1000,
+      prompt = [[Generate a conventional commit message for the staged git changes.
+
+Requirements:
+- Use conventional commit format: <type>(<scope>): <description>
+- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+- Keep the first line under 72 characters
+- Respond ONLY with the commit message, no explanations or markdown
+
+Git diff of staged changes:
+{diff}]],
+      system_prompt = "You are a helpful assistant that generates conventional commit messages based on git diffs.",
+    },
   },
 }
 
 M.config = default_config
+
+-- Get the active provider configuration
+function M.get_active_provider_config()
+  local provider_name = M.config.provider
+  local provider_config = M.config.providers[provider_name]
+
+  if not provider_config then
+    error("No configuration found for provider: " .. tostring(provider_name))
+  end
+
+  -- Return a merged config with provider-specific settings
+  local active_config = vim.tbl_deep_extend("force", {}, provider_config)
+  active_config.provider = provider_name
+
+  return active_config
+end
 
 ---@param opts? AiCommitMsgConfig
 function M.setup(opts)
@@ -58,7 +97,13 @@ function M.setup(opts)
 end
 
 function M.generate_commit_message(callback)
-  require("ai_commit_msg.generator").generate(M.config, callback)
+  local active_config = M.get_active_provider_config()
+  -- Merge provider-specific config with global settings needed by generator
+  local complete_config = vim.tbl_deep_extend("force", active_config, {
+    notifications = M.config.notifications,
+    spinner = M.config.spinner,
+  })
+  require("ai_commit_msg.generator").generate(complete_config, callback)
 end
 
 function M.disable()
