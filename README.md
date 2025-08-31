@@ -8,10 +8,10 @@ perfect commit message.
 
 ## Features
 
-- 🤖 Automatically generates commit messages using OpenAI API when you run
+- 🤖 Automatically generates commit messages using OpenAI or Anthropic APIs when you run
   `git commit -v`
 - 🎯 Works from terminal or within Neovim (using vim-fugitive)
-- 🔑 Uses `OPENAI_API_KEY` environment variable for authentication
+- 🔑 Uses `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` environment variables for authentication
 - ⚙️ Configurable model, temperature, and max tokens
 - 🔄 Optional push prompt after successful commits
 - ⌨️ Customizable keymaps for commit buffer
