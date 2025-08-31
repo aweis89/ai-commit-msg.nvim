@@ -14,7 +14,7 @@ local M = {}
 ---@type AiCommitMsgConfig
 local default_config = {
   enabled = true,
-  model = "gpt-4o-mini",
+  model = "gpt-4.1-nano",
   temperature = 0.3,
   max_tokens = nil,
   prompt = [[Generate a conventional commit message for the staged git changes.
