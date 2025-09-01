@@ -132,8 +132,8 @@ require("ai_commit_msg").setup({
       model = "gpt-4.1-mini",
       temperature = 0.3,
       max_tokens = nil,  -- Uses model default
-      reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high"
       -- Used to display cost per commit in notifications (see screenshot above)
+      reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high" (only applies to reasoning models like gpt-5*)
       pricing = {
         input_per_million = 0.40,   -- Cost per million input tokens
         output_per_million = 1.60,  -- Cost per million output tokens
