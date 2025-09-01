@@ -1,5 +1,8 @@
 # ai-commit-msg.nvim
 
+[![test](https://github.com/aweis89/ai-commit-msg.nvim/actions/workflows/test.yml/badge.svg)](https://github.com/aweis89/ai-commit-msg.nvim/actions/workflows/test.yml)
+[![lint-test](https://github.com/aweis89/ai-commit-msg.nvim/actions/workflows/lint-test.yml/badge.svg)](https://github.com/aweis89/ai-commit-msg.nvim/actions/workflows/lint-test.yml)
+
 **AI-powered commit messages while you review your diff in your favorite editor.**
 
 A Neovim plugin that automatically generates commit messages using AI when you
