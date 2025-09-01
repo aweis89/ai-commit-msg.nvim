@@ -2,6 +2,8 @@
 
 **AI-powered commit messages while you review your diff in your favorite editor.**
 
+<img width="1511" height="945" alt="Screenshot 2025-09-01 at 2 37 28 PM" src="https://github.com/user-attachments/assets/9de0b085-fc17-4248-bf09-c2299893088f" />
+
 A Neovim plugin that automatically generates commit messages using AI when you
 run `git commit -v`, letting you review your changes while the AI crafts the
 perfect commit message.
