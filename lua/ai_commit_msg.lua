@@ -1,20 +1,22 @@
 local M = {}
 
 -- Default prompts used by all providers
-local DEFAULT_PROMPT = [[Generate a concise conventional commit message for the staged git changes.
+local DEFAULT_PROMPT = [[{diff}]]
 
-Requirements:
-- Use conventional commit format: <type>(<scope>): <description>
-- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-- Keep under 72 characters
-- Focus on the main change, ignore implementation details
-- Respond ONLY with the commit message, no explanations
+-- Load system prompt from external file if available, fallback to default
+local function load_system_prompt()
+  local system_prompt_path = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h:h:h")
+    .. "/prompts/system_prompt.md"
+  local file = io.open(system_prompt_path, "r")
+  if file then
+    local content = file:read("*all")
+    file:close()
+    return content:gsub("\n$", "") -- Remove trailing newline
+  end
+  return "You are a helpful assistant that generates conventional commit messages based on git diffs."
+end
 
-Git diff of staged changes:
-{diff}]]
-
-local DEFAULT_SYSTEM_PROMPT =
-  "You are a helpful assistant that generates conventional commit messages based on git diffs."
+local DEFAULT_SYSTEM_PROMPT = load_system_prompt()
 
 ---@class ProviderConfig
 ---@field model string Model to use for this provider
@@ -47,7 +49,7 @@ local default_config = {
   },
   providers = {
     openai = {
-      model = "gpt-5-mini",
+      model = "gpt-4.1-mini",
       temperature = 0.3,
       max_tokens = nil,
       reasoning_effort = "minimal",
