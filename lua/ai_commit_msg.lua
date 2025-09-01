@@ -12,8 +12,8 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 ---@field system_prompt string System prompt that defines the AI's role and behavior
 ---@field reasoning_effort string|nil Reasoning effort for models that support it ("minimal", "medium", "high")
 ---@field pricing table|nil Pricing information for cost calculation
----@field pricing.input_per_million number Cost per million input tokens
----@field pricing.output_per_million number Cost per million output tokens
+---@field pricing.input_per_million number|nil Cost per million input tokens
+---@field pricing.output_per_million number|nil Cost per million output tokens
 
 ---@class AiCommitMsgConfig
 ---@field enabled boolean Whether to enable the plugin
@@ -29,7 +29,7 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 ---@type AiCommitMsgConfig
 local default_config = {
   enabled = true,
-  provider = "openai",
+  provider = "gemini",
   auto_push_prompt = true,
   spinner = true,
   notifications = true,
@@ -83,11 +83,11 @@ function M.calculate_cost(usage, config)
   if not usage or not config.pricing then
     return nil
   end
-  
+
   local input_cost = (usage.input_tokens / 1000000) * config.pricing.input_per_million
   local output_cost = (usage.output_tokens / 1000000) * config.pricing.output_per_million
   local total_cost = input_cost + output_cost
-  
+
   return {
     input_tokens = usage.input_tokens,
     output_tokens = usage.output_tokens,
@@ -102,7 +102,7 @@ function M.format_cost(cost_info, format)
   if not cost_info or format == false then
     return ""
   end
-  
+
   if format == "verbose" then
     return string.format(
       "%d in $%.4f, %d out $%.4f, total $%.4f",

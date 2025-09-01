@@ -8,10 +8,10 @@ perfect commit message.
 
 ## Features
 
-- 🤖 Automatically generates commit messages using OpenAI, Anthropic, or Gemini APIs
+- 🤖 Automatically generates commit messages using Gemini, OpenAI, or Anthropic APIs
   when you run `git commit -v`
 - 🎯 Works from terminal or within Neovim (using vim-fugitive)
-- 🔑 Uses `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GEMINI_API_KEY` environment variables for authentication
+- 🔑 Uses `GEMINI_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY` environment variables for authentication
 - ⚙️ Configurable model, temperature, and max tokens
 - 🔄 Optional push prompt after successful commits
 - ⌨️ Customizable keymaps for commit buffer
@@ -70,6 +70,12 @@ use {
 
 1. Set your AI provider's API key as an environment variable:
 
+**For Gemini (default, best value):**
+
+```bash
+export GEMINI_API_KEY="your-api-key-here"
+```
+
 **For OpenAI:**
 
 ```bash
@@ -80,12 +86,6 @@ export OPENAI_API_KEY="your-api-key-here"
 
 ```bash
 export ANTHROPIC_API_KEY="your-api-key-here"
-```
-
-**For Gemini:**
-
-```bash
-export GEMINI_API_KEY="your-api-key-here"
 ```
 
 1. Configure Neovim as your Git editor:
@@ -101,8 +101,8 @@ require("ai_commit_msg").setup({
   -- Enable/disable the plugin
   enabled = true,
   
-  -- AI provider to use ("openai", "anthropic", or "gemini")
-  provider = "openai",
+  -- AI provider to use ("gemini", "openai", or "anthropic")
+  provider = "gemini",
   
   -- Whether to prompt for push after commit
   auto_push_prompt = true,
@@ -186,6 +186,14 @@ Git diff of staged changes:
 
 ## Example Configurations
 
+### Switch to OpenAI
+
+```lua
+require("ai_commit_msg").setup({
+  provider = "openai",
+})
+```
+
 ### Switch to Anthropic Claude
 
 ```lua
@@ -194,28 +202,19 @@ require("ai_commit_msg").setup({
 })
 ```
 
-### Switch to Google Gemini
+### Customize Gemini settings (default)
 
 ```lua
 require("ai_commit_msg").setup({
   provider = "gemini",
-})
-```
-
-### Customize OpenAI settings
-
-```lua
-require("ai_commit_msg").setup({
-  provider = "openai",
   providers = {
-    openai = {
-      model = "gpt-4o-mini",
+    gemini = {
+      model = "gemini-2.5-flash-lite",
       temperature = 0.5,
-      reasoning_effort = "medium",
       -- IMPORTANT: When overriding model, also update pricing for accurate cost display
       pricing = {
-        input_per_million = 0.15,   -- gpt-4o-mini pricing
-        output_per_million = 0.60,
+        input_per_million = 0.10,   -- gemini-2.5-flash-lite pricing
+        output_per_million = 0.40,
       },
     },
   },
@@ -227,7 +226,7 @@ require("ai_commit_msg").setup({
 ```lua
 require("ai_commit_msg").setup({
   providers = {
-    openai = {
+    gemini = {
       prompt = [[Generate a commit message following Angular commit conventions.
 Include scope if applicable. Format: type(scope): description
 
@@ -246,11 +245,11 @@ Example:
 ```lua
 require("ai_commit_msg").setup({
   providers = {
-    openai = {
-      model = "gpt-4o",  -- Using different model
+    gemini = {
+      model = "gemini-2.5-flash",  -- Using different model
       pricing = {
-        input_per_million = 2.50,   -- Update to gpt-4o pricing
-        output_per_million = 10.00,
+        input_per_million = 0.30,   -- Update to gemini-2.5-flash pricing
+        output_per_million = 2.50,
       },
     },
   },
@@ -285,7 +284,7 @@ git commit -v  # Opens Neovim with diff visible, AI generates message while you 
 1. When you run `git commit -v` (with Neovim as your Git editor), the plugin automatically:
    - Detects when Git opens the commit message buffer
    - Runs `git diff --staged` to get your staged changes
-   - Sends the diff to OpenAI's API with your configured prompt
+   - Sends the diff to your configured AI provider's API with your configured prompt
    - Inserts the generated message into the commit buffer
    - The `-v` flag shows the diff below the message,
    allowing you to review changes during commit generation
@@ -307,19 +306,19 @@ git config --global core.editor nvim
 
 - Neovim >= 0.7.0
 - AI provider API key:
+  - Gemini: Set `GEMINI_API_KEY` environment variable (default, best value)
   - OpenAI: Set `OPENAI_API_KEY` environment variable
-  - Anthropic: Set `ANTHROPIC_API_KEY` environment variable  
-  - Gemini: Set `GEMINI_API_KEY` environment variable
+  - Anthropic: Set `ANTHROPIC_API_KEY` environment variable
 - Git
 - curl (for making API requests)
 
 ## Tips
 
-- The plugin uses OpenAI Chat Completions API and Anthropic Messages API directly
+- The plugin uses Gemini API, OpenAI Chat Completions API, and Anthropic Messages API directly
 - Lower temperature values (0.1-0.3) produce more consistent commit messages
 - Higher temperature values (0.5-0.8) produce more creative variations
-- The default model `gpt-4.1-mini` is chosen for its larger context window and lower latency
-- For `gpt-5-mini`, the reasoning effort defaults to "minimal" when not specified
+- The default model `gemini-2.5-flash-lite` provides excellent results at a very low cost
+- For OpenAI's `gpt-5-mini`, the reasoning effort defaults to "minimal" when not specified
 - Claude 3.5 Haiku is also a solid choice for commit message generation
 - If you don't specify `max_tokens`, the model will use its default limit
 - For Anthropic models, `max_tokens` is required by the API
