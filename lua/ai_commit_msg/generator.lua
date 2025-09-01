@@ -132,7 +132,7 @@ function M.generate(config, callback)
           end
         else
           local duration = (vim.uv.hrtime() - start_time) / 1e9
-          local duration_str = duration < 1 and string.format("%.1fs", duration) or string.format("%.0fs", duration)
+          local duration_str = string.format("%.2fs", duration)
 
           -- Calculate and format cost if available
           local ai_commit_msg = require("ai_commit_msg")
