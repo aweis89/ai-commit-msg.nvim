@@ -8,10 +8,10 @@ perfect commit message.
 
 ## Features
 
-- 🤖 Automatically generates commit messages using OpenAI or Anthropic APIs
+- 🤖 Automatically generates commit messages using OpenAI, Anthropic, or Gemini APIs
   when you run `git commit -v`
 - 🎯 Works from terminal or within Neovim (using vim-fugitive)
-- 🔑 Uses `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` environment variables for authentication
+- 🔑 Uses `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GEMINI_API_KEY` environment variables for authentication
 - ⚙️ Configurable model, temperature, and max tokens
 - 🔄 Optional push prompt after successful commits
 - ⌨️ Customizable keymaps for commit buffer
@@ -82,6 +82,12 @@ export OPENAI_API_KEY="your-api-key-here"
 export ANTHROPIC_API_KEY="your-api-key-here"
 ```
 
+**For Gemini:**
+
+```bash
+export GEMINI_API_KEY="your-api-key-here"
+```
+
 1. Configure Neovim as your Git editor:
 
 ```bash
@@ -95,7 +101,7 @@ require("ai_commit_msg").setup({
   -- Enable/disable the plugin
   enabled = true,
   
-  -- AI provider to use ("openai" or "anthropic")
+  -- AI provider to use ("openai", "anthropic", or "gemini")
   provider = "openai",
   
   -- Whether to prompt for push after commit
@@ -110,6 +116,9 @@ require("ai_commit_msg").setup({
   -- Number of surrounding lines to include in git diff (default: 10)
   context_lines = 10,
   
+  -- Cost display format ("compact", "verbose", or false to disable)
+  cost_display = "compact",
+  
   -- Keymaps for commit buffer
   keymaps = {
     quit = "q",  -- Set to false to disable
@@ -122,6 +131,10 @@ require("ai_commit_msg").setup({
       temperature = 0.3,
       max_tokens = nil,  -- Uses model default
       reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high"
+      pricing = {
+        input_per_million = 0.40,   -- Cost per million input tokens
+        output_per_million = 1.60,  -- Cost per million output tokens
+      },
       prompt = [[Generate a concise conventional commit message for the staged git changes.
 
 Requirements:
@@ -140,6 +153,10 @@ Git diff of staged changes:
       model = "claude-3-5-haiku-20241022",
       temperature = 0.3,
       max_tokens = 1000,  -- Required for Anthropic API
+      pricing = {
+        input_per_million = 0.80,   -- Cost per million input tokens
+        output_per_million = 4.00,  -- Cost per million output tokens
+      },
       prompt = [[Generate a concise conventional commit message for the staged git changes.
 
 Requirements:
@@ -153,6 +170,15 @@ Git diff of staged changes:
 {diff}]],
       system_prompt = "You are a helpful assistant that generates "
         .. "conventional commit messages based on git diffs.",
+    },
+    gemini = {
+      model = "gemini-2.5-flash-lite",
+      temperature = 0.3,
+      max_tokens = 1000,
+      pricing = {
+        input_per_million = 0.10,   -- Cost per million input tokens
+        output_per_million = 0.40,  -- Cost per million output tokens
+      },
     },
   },
 })
@@ -168,6 +194,14 @@ require("ai_commit_msg").setup({
 })
 ```
 
+### Switch to Google Gemini
+
+```lua
+require("ai_commit_msg").setup({
+  provider = "gemini",
+})
+```
+
 ### Customize OpenAI settings
 
 ```lua
@@ -178,6 +212,11 @@ require("ai_commit_msg").setup({
       model = "gpt-4o-mini",
       temperature = 0.5,
       reasoning_effort = "medium",
+      -- IMPORTANT: When overriding model, also update pricing for accurate cost display
+      pricing = {
+        input_per_million = 0.15,   -- gpt-4o-mini pricing
+        output_per_million = 0.60,
+      },
     },
   },
 })
@@ -194,6 +233,25 @@ Include scope if applicable. Format: type(scope): description
 
 Git diff:
 {diff}]],
+    },
+  },
+})
+```
+
+## ⚠️ Important: Custom Model Pricing
+
+**When overriding the default model for any provider, you MUST also update the pricing information to ensure accurate cost calculations.** The plugin includes pricing for the default models, but if you use a different model, the cost display will be inaccurate unless you specify the correct pricing.
+
+Example:
+```lua
+require("ai_commit_msg").setup({
+  providers = {
+    openai = {
+      model = "gpt-4o",  -- Using different model
+      pricing = {
+        input_per_million = 2.50,   -- Update to gpt-4o pricing
+        output_per_million = 10.00,
+      },
     },
   },
 })
@@ -250,7 +308,8 @@ git config --global core.editor nvim
 - Neovim >= 0.7.0
 - AI provider API key:
   - OpenAI: Set `OPENAI_API_KEY` environment variable
-  - Anthropic: Set `ANTHROPIC_API_KEY` environment variable
+  - Anthropic: Set `ANTHROPIC_API_KEY` environment variable  
+  - Gemini: Set `GEMINI_API_KEY` environment variable
 - Git
 - curl (for making API requests)
 

@@ -17,7 +17,7 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 
 ---@class AiCommitMsgConfig
 ---@field enabled boolean Whether to enable the plugin
----@field provider string AI provider to use ("openai" or "anthropic")
+---@field provider string AI provider to use ("openai", "anthropic", or "gemini")
 ---@field providers table<string, ProviderConfig> Provider-specific configurations
 ---@field auto_push_prompt boolean Whether to prompt for push after commit
 ---@field spinner boolean Whether to show a spinner while generating
@@ -60,6 +60,17 @@ local default_config = {
       pricing = {
         input_per_million = 0.80,
         output_per_million = 4.00,
+      },
+    },
+    gemini = {
+      model = "gemini-2.5-flash-lite",
+      temperature = 0.3,
+      max_tokens = 1000,
+      prompt = DEFAULT_PROMPT,
+      system_prompt = DEFAULT_SYSTEM_PROMPT,
+      pricing = {
+        input_per_million = 0.10,
+        output_per_million = 0.40,
       },
     },
   },
