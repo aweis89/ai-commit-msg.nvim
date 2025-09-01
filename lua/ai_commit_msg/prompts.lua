@@ -61,6 +61,8 @@ Specification (follow exactly):
 - Footer(s) (optional):
   - Use for metadata like issue references and breaking changes
   - Each footer on its own line
+  - ONLY add issue references (Closes #, Fixes #, etc.) when there is an actual issue number to reference
+  - DO NOT add placeholder issue references like "Closes # (none)" or empty issue numbers
   - Examples:
     - BREAKING CHANGE: <explanation>
     - Closes #123
@@ -87,7 +89,7 @@ When to use multi-line commits (with bullet-style body and/or footers):
   - You modified multiple areas and want to call out secondary impacts
 - Use footers when:
   - There is a breaking change (mandatory: add "!" in header and a BREAKING CHANGE footer)
-  - You need to reference issues, tickets, PRs, or include co-authors
+  - You need to reference actual issues, tickets, PRs, or include co-authors (only if specific numbers/names exist)
   - You are reverting a commit (include the revert hash in the body)
 
 Input:
