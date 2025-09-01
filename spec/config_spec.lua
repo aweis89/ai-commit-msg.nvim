@@ -35,7 +35,7 @@ describe("ai_commit_msg config", function()
       ai_commit_msg.setup({
         provider = "anthropic",
         model = "claude-3-5-sonnet-20241022",
-        temperature = 0.5
+        temperature = 0.5,
       })
 
       assert.equals("anthropic", ai_commit_msg.config.provider)
@@ -48,7 +48,7 @@ describe("ai_commit_msg config", function()
 
     it("preserves defaults when partial config provided", function()
       ai_commit_msg.setup({
-        model = "gpt-4o"
+        model = "gpt-4o",
       })
 
       assert.equals("openai", ai_commit_msg.config.provider) -- Should keep default

@@ -17,7 +17,7 @@ describe("setup", function()
     assert(plugin.config.prompt == "Custom prompt", "Custom prompt should be set")
     assert(plugin.config.command == "echo 'test'", "Custom command should be set")
   end)
-  
+
   it("merges config correctly", function()
     plugin.setup({
       prompt = "Another prompt",
@@ -33,7 +33,7 @@ describe("enable/disable", function()
     plugin.disable()
     assert(plugin.config.enabled == false, "Plugin should be disabled")
   end)
-  
+
   it("can enable the plugin", function()
     plugin.setup({ enabled = false })
     plugin.enable()

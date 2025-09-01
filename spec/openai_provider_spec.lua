@@ -37,10 +37,10 @@ describe("openai provider", function()
       -- This test would require mocking vim.system, which is complex
       -- For now, we test the prompt processing logic separately
       local config = {
-        prompt = "Generate commit for:\n{diff}\nEnd of diff."
+        prompt = "Generate commit for:\n{diff}\nEnd of diff.",
       }
       local diff = "diff --git a/file.txt"
-      
+
       -- We'd need to extract the prompt processing logic to test it properly
       -- This is a placeholder for the actual test implementation
       assert.is_table(config)

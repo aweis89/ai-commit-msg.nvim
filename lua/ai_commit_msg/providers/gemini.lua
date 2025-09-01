@@ -71,11 +71,17 @@ function M.call_api(config, diff, callback)
 
     vim.notify("ai-commit-msg.nvim: Full API response: " .. vim.inspect(response), vim.log.levels.DEBUG)
 
-    if response.candidates and response.candidates[1] and response.candidates[1].content and response.candidates[1].content.parts and response.candidates[1].content.parts[1] then
+    if
+      response.candidates
+      and response.candidates[1]
+      and response.candidates[1].content
+      and response.candidates[1].content.parts
+      and response.candidates[1].content.parts[1]
+    then
       local commit_msg = response.candidates[1].content.parts[1].text
       commit_msg = commit_msg:gsub("^```%w*\n", ""):gsub("\n```$", ""):gsub("^`", ""):gsub("`$", "")
       commit_msg = vim.trim(commit_msg)
-      
+
       -- Extract token usage if available
       local usage = nil
       if response.usageMetadata then
@@ -84,7 +90,7 @@ function M.call_api(config, diff, callback)
           output_tokens = response.usageMetadata.candidatesTokenCount or 0,
         }
       end
-      
+
       callback(true, commit_msg, usage)
     else
       callback(false, "Unexpected API response format")

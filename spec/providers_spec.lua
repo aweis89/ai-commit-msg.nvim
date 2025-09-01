@@ -47,9 +47,9 @@ describe("providers", function()
       local mock_provider = {
         call_api = function(config, diff, callback)
           callback(true, "test result")
-        end
+        end,
       }
-      
+
       -- Mock the get_provider function
       local original_get_provider = providers.get_provider
       providers.get_provider = function(config)

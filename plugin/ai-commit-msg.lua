@@ -32,7 +32,7 @@ end, { desc = "Enable AI commit message generation" })
 vim.api.nvim_create_user_command("AiCommitMsgDebug", function()
   local plugin = require("ai_commit_msg")
   vim.notify("Plugin config: " .. vim.inspect(plugin.config), vim.log.levels.INFO)
-  
+
   -- Check if autocmds are registered
   local autocmds = vim.api.nvim_get_autocmds({ group = "ai_commit_msg" })
   if #autocmds > 0 then
