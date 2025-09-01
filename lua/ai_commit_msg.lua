@@ -2,21 +2,7 @@ local M = {}
 
 -- Default prompts used by all providers
 local DEFAULT_PROMPT = [[{diff}]]
-
--- Load system prompt from external file if available, fallback to default
-local function load_system_prompt()
-  local system_prompt_path = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h:h:h")
-    .. "/prompts/system_prompt.md"
-  local file = io.open(system_prompt_path, "r")
-  if file then
-    local content = file:read("*all")
-    file:close()
-    return content:gsub("\n$", "") -- Remove trailing newline
-  end
-  return "You are a helpful assistant that generates conventional commit messages based on git diffs."
-end
-
-local DEFAULT_SYSTEM_PROMPT = load_system_prompt()
+local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PROMPT
 
 ---@class ProviderConfig
 ---@field model string Model to use for this provider
