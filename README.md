@@ -1,6 +1,6 @@
 # ai-commit-msg.nvim
 
-[![test](https://github.com/aweis89/ai-commit-msg.nvim/actions/workflows/test.yml/badge.svg)](https://github.com/aweis89/ai-commit-msg.nvim/actions/workflows/test.yml)
+[![test](https://github.com/aweis89/ai-commit-msg.nvim/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/aweis89/ai-commit-msg.nvim/actions/workflows/test.yml)
 [![lint-test](https://github.com/aweis89/ai-commit-msg.nvim/actions/workflows/lint-test.yml/badge.svg)](https://github.com/aweis89/ai-commit-msg.nvim/actions/workflows/lint-test.yml)
 
 **AI-powered commit messages while you review your diff in your favorite editor.**
