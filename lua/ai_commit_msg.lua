@@ -11,6 +11,9 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 ---@field prompt string Prompt to send to the AI
 ---@field system_prompt string System prompt that defines the AI's role and behavior
 ---@field reasoning_effort string|nil Reasoning effort for models that support it ("minimal", "medium", "high")
+---@field pricing table|nil Pricing information for cost calculation
+---@field pricing.input_per_million number Cost per million input tokens
+---@field pricing.output_per_million number Cost per million output tokens
 
 ---@class AiCommitMsgConfig
 ---@field enabled boolean Whether to enable the plugin
@@ -21,6 +24,7 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 ---@field notifications boolean Whether to show notifications
 ---@field context_lines number Number of surrounding lines to include in git diff
 ---@field keymaps table<string, string|false> Keymaps for commit buffer
+---@field cost_display string|false Cost display format ("compact", "verbose", or false to disable)
 
 ---@type AiCommitMsgConfig
 local default_config = {
@@ -33,6 +37,7 @@ local default_config = {
   keymaps = {
     quit = "q", -- Set to false to disable
   },
+  cost_display = "compact", -- "compact", "verbose", or false
   providers = {
     openai = {
       model = "gpt-4.1-mini",
@@ -41,6 +46,10 @@ local default_config = {
       reasoning_effort = "minimal",
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
+      pricing = {
+        input_per_million = 0.40,
+        output_per_million = 1.60,
+      },
     },
     anthropic = {
       model = "claude-3-5-haiku-20241022",
@@ -48,11 +57,55 @@ local default_config = {
       max_tokens = 1000,
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
+      pricing = {
+        input_per_million = 0.80,
+        output_per_million = 4.00,
+      },
     },
   },
 }
 
 M.config = default_config
+
+-- Calculate cost from token usage and provider pricing
+function M.calculate_cost(usage, config)
+  if not usage or not config.pricing then
+    return nil
+  end
+  
+  local input_cost = (usage.input_tokens / 1000000) * config.pricing.input_per_million
+  local output_cost = (usage.output_tokens / 1000000) * config.pricing.output_per_million
+  local total_cost = input_cost + output_cost
+  
+  return {
+    input_tokens = usage.input_tokens,
+    output_tokens = usage.output_tokens,
+    input_cost = input_cost,
+    output_cost = output_cost,
+    total_cost = total_cost,
+  }
+end
+
+-- Format cost information for display
+function M.format_cost(cost_info, format)
+  if not cost_info or format == false then
+    return ""
+  end
+  
+  if format == "verbose" then
+    return string.format(
+      "Tokens: %d in, %d out | Cost: $%.4f (in: $%.4f, out: $%.4f)",
+      cost_info.input_tokens,
+      cost_info.output_tokens,
+      cost_info.total_cost,
+      cost_info.input_cost,
+      cost_info.output_cost
+    )
+  else -- compact format (default)
+    local total_tokens = cost_info.input_tokens + cost_info.output_tokens
+    return string.format("(%dk $%.4f)", math.floor(total_tokens / 1000), cost_info.total_cost)
+  end
+end
 
 -- Get the active provider configuration
 function M.get_active_provider_config()

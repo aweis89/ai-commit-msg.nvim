@@ -75,7 +75,17 @@ function M.call_api(config, diff, callback)
       local commit_msg = response.content[1].text
       commit_msg = commit_msg:gsub("^```%w*\n", ""):gsub("\n```$", ""):gsub("^`", ""):gsub("`$", "")
       commit_msg = vim.trim(commit_msg)
-      callback(true, commit_msg)
+      
+      -- Extract token usage if available
+      local usage = nil
+      if response.usage then
+        usage = {
+          input_tokens = response.usage.input_tokens,
+          output_tokens = response.usage.output_tokens,
+        }
+      end
+      
+      callback(true, commit_msg, usage)
     else
       callback(false, "Unexpected API response format")
     end
