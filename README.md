@@ -6,7 +6,7 @@ A Neovim plugin that automatically generates commit messages using AI when you
 run `git commit -v`, letting you review your changes while the AI crafts the
 perfect commit message.
 
-<img width="1511" height="945" alt="Screenshot 2025-09-01 at 2 37 28 PM" src="https://github.com/user-attachments/assets/9de0b085-fc17-4248-bf09-c2299893088f" />
+<img width="1512" height="945" alt="Screenshot 2025-09-01 at 3 16 03 PM" src="https://github.com/user-attachments/assets/d352780e-f271-45e9-903c-0bfb58c95ca2" />
 
 ## Features
 
