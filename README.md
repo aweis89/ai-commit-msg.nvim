@@ -133,23 +133,13 @@ require("ai_commit_msg").setup({
       temperature = 0.3,
       max_tokens = nil,  -- Uses model default
       reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high"
+      -- Used to display cost per commit in notifications (see screenshot above)
       pricing = {
         input_per_million = 0.40,   -- Cost per million input tokens
         output_per_million = 1.60,  -- Cost per million output tokens
       },
-      prompt = [[Generate a concise conventional commit message for the staged git changes.
-
-Requirements:
-- Use conventional commit format: <type>(<scope>): <description>
-- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-- Keep under 72 characters
-- Focus on the main change, ignore implementation details
-- Respond ONLY with the commit message, no explanations
-
-Git diff of staged changes:
-{diff}]],
-      system_prompt = "You are a helpful assistant that generates "
-        .. "conventional commit messages based on git diffs.",
+      prompt = nil, -- Override to add custom prompt, otherwise uses provider default
+      system_prompt = nil, -- Override to add custom system prompt, otherwise uses provider default
     },
     anthropic = {
       model = "claude-3-5-haiku-20241022",
@@ -159,19 +149,8 @@ Git diff of staged changes:
         input_per_million = 0.80,   -- Cost per million input tokens
         output_per_million = 4.00,  -- Cost per million output tokens
       },
-      prompt = [[Generate a concise conventional commit message for the staged git changes.
-
-Requirements:
-- Use conventional commit format: <type>(<scope>): <description>
-- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-- Keep under 72 characters
-- Focus on the main change, ignore implementation details
-- Respond ONLY with the commit message, no explanations
-
-Git diff of staged changes:
-{diff}]],
-      system_prompt = "You are a helpful assistant that generates "
-        .. "conventional commit messages based on git diffs.",
+      prompt = nil, -- Override to add custom prompt, otherwise uses provider default
+      system_prompt = nil, -- Override to add custom system prompt, otherwise uses provider default
     },
     gemini = {
       model = "gemini-2.5-flash-lite",
@@ -233,7 +212,7 @@ require("ai_commit_msg").setup({
 Include scope if applicable. Format: type(scope): description
 
 Git diff:
-{diff}]],
+{diff}]], -- Override to add custom prompt, otherwise uses provider default
     },
   },
 })
