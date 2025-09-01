@@ -35,7 +35,7 @@ local default_config = {
   },
   providers = {
     openai = {
-      model = "gpt-5-mini",
+      model = "gpt-4.1-mini",
       temperature = 0.3,
       max_tokens = nil,
       reasoning_effort = "minimal",

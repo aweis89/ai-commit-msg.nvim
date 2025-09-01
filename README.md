@@ -118,7 +118,7 @@ require("ai_commit_msg").setup({
   -- Provider-specific configurations
   providers = {
     openai = {
-      model = "gpt-5-mini",
+      model = "gpt-4.1-mini",
       temperature = 0.3,
       max_tokens = nil,  -- Uses model default
       reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high"
@@ -259,8 +259,8 @@ git config --global core.editor nvim
 - The plugin uses OpenAI Chat Completions API and Anthropic Messages API directly
 - Lower temperature values (0.1-0.3) produce more consistent commit messages
 - Higher temperature values (0.5-0.8) produce more creative variations
-- The default model `gpt-5-mini` with minimal reasoning effort is chosen
-  for speed and efficiency
+- The default model `gpt-4.1-mini` is chosen for its larger context window and lower latency
+- For `gpt-5-mini`, the reasoning effort defaults to "minimal" when not specified
 - Claude 3.5 Haiku is also a solid choice for commit message generation
 - If you don't specify `max_tokens`, the model will use its default limit
 - For Anthropic models, `max_tokens` is required by the API
