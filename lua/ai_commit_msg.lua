@@ -94,16 +94,15 @@ function M.format_cost(cost_info, format)
   
   if format == "verbose" then
     return string.format(
-      "Tokens: %d in, %d out | Cost: $%.4f (in: $%.4f, out: $%.4f)",
+      "%d in $%.4f, %d out $%.4f, total $%.4f",
       cost_info.input_tokens,
-      cost_info.output_tokens,
-      cost_info.total_cost,
       cost_info.input_cost,
-      cost_info.output_cost
+      cost_info.output_tokens,
+      cost_info.output_cost,
+      cost_info.total_cost
     )
   else -- compact format (default)
-    local total_tokens = cost_info.input_tokens + cost_info.output_tokens
-    return string.format("(%dk $%.4f)", math.floor(total_tokens / 1000), cost_info.total_cost)
+    return string.format("$%.4f", cost_info.total_cost)
   end
 end
 
@@ -144,6 +143,7 @@ function M.generate_commit_message(callback)
     notifications = M.config.notifications,
     spinner = M.config.spinner,
     context_lines = M.config.context_lines,
+    cost_display = M.config.cost_display,
   })
   require("ai_commit_msg.generator").generate(complete_config, callback)
 end

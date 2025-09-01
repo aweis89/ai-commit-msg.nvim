@@ -108,7 +108,7 @@ function M.generate(config, callback)
 
     local start_time = vim.uv.hrtime()
 
-    call_api(config, diff, function(success, result)
+    call_api(config, diff, function(success, result, usage)
       -- Stop spinner
       if spinner_timer and not spinner_timer:is_closing() then
         spinner_timer:stop()
@@ -134,10 +134,22 @@ function M.generate(config, callback)
           local duration = (vim.uv.hrtime() - start_time) / 1e9
           local duration_str = duration < 1 and string.format("%.1fs", duration) or string.format("%.0fs", duration)
 
+          -- Calculate and format cost if available
+          local ai_commit_msg = require("ai_commit_msg")
+          local cost_info = ai_commit_msg.calculate_cost(usage, config)
+          local duration_cost_str = duration_str
+          if cost_info and config.cost_display then
+            if config.cost_display == "compact" then
+              duration_cost_str = duration_str .. " " .. ai_commit_msg.format_cost(cost_info, config.cost_display)
+            else
+              duration_cost_str = duration_str .. ") " .. ai_commit_msg.format_cost(cost_info, config.cost_display)
+            end
+          end
+
           vim.notify("ai-commit-msg.nvim: Generated message: " .. result:sub(1, 50) .. "...", vim.log.levels.DEBUG)
           -- Clear spinner notification with success message
           if config.notifications then
-            vim.notify("✅ Commit message generated (" .. duration_str .. ")", vim.log.levels.INFO, {
+            vim.notify("✅ Commit message generated (" .. duration_cost_str .. ")", vim.log.levels.INFO, {
               id = notif_id,
               title = "AI Commit",
               timeout = 2000,
