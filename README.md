@@ -13,6 +13,7 @@ perfect commit message.
 - 🤖 Automatically generates commit messages using Gemini, OpenAI, or Anthropic APIs
   when you run `git commit -v`
 - 🎯 Works from terminal or within Neovim (using vim-fugitive)
+- 🤝 Non-intrusive - if you start typing, AI suggestions are added as comments instead
 - 🔑 Uses `GEMINI_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY` environment variables for authentication
 - ⚙️ Configurable model, temperature, and max tokens
 - 🔄 Optional push prompt after successful commits
