@@ -4,7 +4,7 @@ describe("setup", function()
   it("works with default config", function()
     plugin.setup()
     assert(plugin.config.enabled == true, "Plugin should be enabled by default")
-    assert(plugin.config.prompt ~= nil, "Default prompt should be set")
+    assert(plugin.config.providers.gemini.prompt ~= nil, "Default prompt should be set")
   end)
 
   it("works with custom config", function()
