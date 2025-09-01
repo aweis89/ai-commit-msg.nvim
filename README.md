@@ -139,8 +139,7 @@ require("ai_commit_msg").setup({
         input_per_million = 0.40,   -- Cost per million input tokens
         output_per_million = 1.60,  -- Cost per million output tokens
       },
-      prompt = nil, -- Override to add custom prompt, otherwise uses provider default
-      system_prompt = nil, -- Override to add custom system prompt, otherwise uses provider default
+      system_prompt = nil, -- Override to customize commit message generation instructions
     },
     anthropic = {
       model = "claude-3-5-haiku-20241022",
@@ -150,8 +149,7 @@ require("ai_commit_msg").setup({
         input_per_million = 0.80,   -- Cost per million input tokens
         output_per_million = 4.00,  -- Cost per million output tokens
       },
-      prompt = nil, -- Override to add custom prompt, otherwise uses provider default
-      system_prompt = nil, -- Override to add custom system prompt, otherwise uses provider default
+      system_prompt = nil, -- Override to customize commit message generation instructions
     },
     gemini = {
       model = "gemini-2.5-flash-lite",
@@ -203,17 +201,14 @@ require("ai_commit_msg").setup({
 })
 ```
 
-### Custom prompt for specific commit style
+### Custom system prompt for specific commit style
 
 ```lua
 require("ai_commit_msg").setup({
   providers = {
     gemini = {
-      prompt = [[Generate a commit message following Angular commit conventions.
-Include scope if applicable. Format: type(scope): description
-
-Git diff:
-{diff}]], -- Override to add custom prompt, otherwise uses provider default
+      system_prompt = [[Generate a commit message following Angular commit conventions.
+Include scope if applicable. Format: type(scope): description]], -- Override system prompt, diff is added as user message
     },
   },
 })
