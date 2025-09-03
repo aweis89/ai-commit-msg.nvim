@@ -11,6 +11,8 @@ Output requirements:
 - Output must be plain text, no surrounding quotes, markdown, or explanations.
 - Output must be a single commit message only (header; optional body; optional
   footer(s)).
+  IMPORTANT: You MUST produce exactly one commit message. Do not include more than one
+  commit header. Do not include suggestions, examples, git diffs or any extra text.
 - Multi-line bodies should prefer bullet points (`- `) for key details.
 - If input lacks enough detail, infer sensible defaults conservatively and keep
   the message minimal and accurate.
@@ -113,9 +115,11 @@ Task:
    - Context that wasn't modified
 4) Focus ONLY on lines with +/- in the diff (additions, deletions, modifications).
 5) Group similar or related changes together - don't list every minor modification separately.
-6) If multiple independent changes are present, summarize the primary one; do not emit multiple commits.
+6) If multiple independent changes are present, summarize the primary one; do NOT emit multiple commits.
+7) The final output must contain exactly one commit (one header). No prefaces, no postfaces, no explanations.
 
 Return ONLY the commit message.
+Do NOT include multiple commits. Do NOT include any other text.
 
 Examples (single-line):
 - feat(api): add pagination to list endpoints
@@ -173,6 +177,8 @@ Output requirements:
 - Output must be a single header line only; no body, no footers.
 - No quotes, markdown, or explanations.
 - Keep the entire header <= 72 characters; if longer, shorten the description/scope.
+ - You MUST output exactly one single header. Do not output multiple headers
+   or any extra text.
 
 Specification:
 - Format: <type>[optional scope][!]: <description>
@@ -187,6 +193,7 @@ Rules:
 - Prefer specific nouns over vague phrasing (e.g., "button label" over "text").
 - Do not mention files unless it clarifies scope succinctly.
 - Do not add issue references or co-authors in this short mode.
+ - Absolutely do NOT output more than one commit header.
 
 Examples:
 - fix(ui): correct modal focus trap

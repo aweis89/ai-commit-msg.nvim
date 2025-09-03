@@ -39,6 +39,7 @@ function M.call_api(config, diff, callback)
 
   local payload_data = {
     model = config.model,
+    n = 1, -- ensure only one choice is generated
     messages = {
       {
         role = "system",

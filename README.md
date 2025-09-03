@@ -152,7 +152,7 @@ require("ai_commit_msg").setup({
     anthropic = {
       model = "claude-3-5-haiku-20241022",
       temperature = 0.3,
-      max_tokens = 1000,  -- Required for Anthropic API
+      max_tokens = 2000,  -- Required for Anthropic API
       pricing = {
         ["claude-3-5-haiku-20241022"] = {
           input_per_million = 0.80,   -- Cost per million input tokens
@@ -164,7 +164,7 @@ require("ai_commit_msg").setup({
     gemini = {
       model = "gemini-2.5-flash-lite",
       temperature = 0.3,
-      max_tokens = 1000,
+      max_tokens = 4000,
       pricing = {
         ["gemini-2.5-flash-lite"] = {
           input_per_million = 0.10,   -- Cost per million input tokens
@@ -238,6 +238,8 @@ The plugin includes default pricing for these models:
 
 All other models: add the correct input/output pricing in your config to ensure accurate costs in notifications. If a model has no pricing entry, cost is simply omitted.
 
+Note on defaults: The plugin's default model choices may change over time to provide the best balance of quality and price. If you want to ensure a specific model is always used, explicitly pin it in your config (for example, `providers.gemini.model = "gemini-2.5-flash-lite"` or `providers.openai.model = "gpt-5-nano"`).
+
 Note on quality vs cost: Upgrading to OpenAI `gpt-5-mini` or `gpt-4.1-mini` (faster) generally yields better commit messages than the corresponding nano models, but at a higher cost.
 
 ## Commands
@@ -245,6 +247,25 @@ Note on quality vs cost: Upgrading to OpenAI `gpt-5-mini` or `gpt-4.1-mini` (fas
 - `:AiCommitMsg` - Manually generate a commit message (prints to messages)
 - `:AiCommitMsgDisable` - Disable automatic commit message generation
 - `:AiCommitMsgEnable` - Enable automatic commit message generation
+- `:AiCommitMsgAllModels` - Generate commit messages across all configured provider models for your staged diff; opens a buffer with per-model results, timing, and (when pricing is configured) estimated cost — useful for model selection
+- `:AiCommitMsgTestMatrix [diffs_dir] [out_file]` - Run a prompt/model matrix against `.diff` fixtures. Set `AI_COMMIT_MSG_DRY_RUN=1` to only collect prompt sizes without API calls; otherwise writes JSONL lines to `out_file` if provided
+
+## Choosing a Model
+
+- Use `:AiCommitMsgAllModels` on a representative staged diff to compare output quality, latency, and cost across models.
+- Once you pick a favorite, pin it in your config under `providers.<name>.model` to lock it in and avoid future default changes.
+- Example:
+
+```lua
+require("ai_commit_msg").setup({
+  provider = "openai",
+  providers = {
+    openai = {
+      model = "gpt-5-nano", -- pin to a specific model
+    },
+  },
+})
+```
 
 ## How it works
 

@@ -23,13 +23,18 @@ function M.call_api(config, diff, callback)
 
   local max_tokens = config.max_tokens or 1000
 
-  local payload = vim.json.encode({
+  -- Prefer using systemInstruction + user content for clarity
+  local payload_tbl = {
+    systemInstruction = {
+      parts = {
+        { text = config.system_prompt or "" },
+      },
+    },
     contents = {
       {
+        role = "user",
         parts = {
-          {
-            text = config.system_prompt .. "\n\n" .. prompt,
-          },
+          { text = prompt },
         },
       },
     },
@@ -37,7 +42,11 @@ function M.call_api(config, diff, callback)
       maxOutputTokens = max_tokens,
       temperature = config.temperature or 0.3,
     },
-  })
+  }
+
+  -- Do not include reasoningEffort: Gemini API rejects unknown fields
+
+  local payload = vim.json.encode(payload_tbl)
 
   local curl_args = {
     "curl",
@@ -69,16 +78,42 @@ function M.call_api(config, diff, callback)
       return
     end
 
+    -- Handle safety blocks and prompt feedback
+    if response.promptFeedback and response.promptFeedback.blockReason then
+      local reason = response.promptFeedback.blockReason
+      callback(false, "Gemini blocked: " .. tostring(reason))
+      return
+    end
+
     vim.notify("ai-commit-msg.nvim: Full API response: " .. vim.inspect(response), vim.log.levels.DEBUG)
 
-    if
-      response.candidates
-      and response.candidates[1]
-      and response.candidates[1].content
-      and response.candidates[1].content.parts
-      and response.candidates[1].content.parts[1]
-    then
-      local commit_msg = response.candidates[1].content.parts[1].text
+    if response.candidates and response.candidates[1] then
+      local cand = response.candidates[1]
+      local text
+      -- Primary: parts with text
+      if cand.content and cand.content.parts then
+        local parts = cand.content.parts
+        local accum = {}
+        for _, p in ipairs(parts) do
+          if type(p) == "table" and p.text then
+            table.insert(accum, p.text)
+          end
+        end
+        if #accum > 0 then
+          text = table.concat(accum, "\n")
+        end
+      end
+      -- Alternate: content as array of parts-like tables
+      if not text and cand.content and cand.content[1] and cand.content[1].text then
+        text = cand.content[1].text
+      end
+      -- Fallback: some responses may include text directly
+      if not text and cand.text then
+        text = cand.text
+      end
+
+      if text then
+        local commit_msg = text
       commit_msg = commit_msg:gsub("^```%w*\n", ""):gsub("\n```$", ""):gsub("^`", ""):gsub("`$", "")
       commit_msg = vim.trim(commit_msg)
 
@@ -91,10 +126,17 @@ function M.call_api(config, diff, callback)
         }
       end
 
-      callback(true, commit_msg, usage)
-    else
-      callback(false, "Unexpected API response format")
+        callback(true, commit_msg, usage)
+        return
+      end
+
+      -- Provide more helpful diagnostics
+      local finish = cand.finishReason or "unknown"
+      callback(false, "Unexpected Gemini response (finishReason=" .. tostring(finish) .. ")")
+      return
     end
+
+    callback(false, "Unexpected Gemini response shape (no candidates)")
   end)
 end
 
