@@ -40,15 +40,15 @@ local default_config = {
   cost_display = "compact", -- "compact", "verbose", or false
   providers = {
     openai = {
-      model = "gpt-5-mini",
+      model = "gpt-5-nano",
       temperature = 0.3,
       max_tokens = nil,
       reasoning_effort = "minimal",
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
       pricing = {
-        input_per_million = 0.25,
-        output_per_million = 2.00,
+        input_per_million = 0.05,
+        output_per_million = 0.4,
       },
     },
     anthropic = {
