@@ -11,9 +11,9 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 ---@field prompt string Prompt to send to the AI
 ---@field system_prompt string System prompt that defines the AI's role and behavior
 ---@field reasoning_effort string|nil Reasoning effort for models that support it ("minimal", "medium", "high")
----@field pricing table|nil Pricing information for cost calculation
----@field pricing.input_per_million number|nil Cost per million input tokens
----@field pricing.output_per_million number|nil Cost per million output tokens
+---@field pricing table|nil Pricing information for cost calculation. Supports:
+---  - Flat table: { input_per_million, output_per_million } (backwards compatible)
+---  - Map keyed by model: { ["model-name"] = { input_per_million, output_per_million }, default = { ... } }
 
 ---@class AiCommitMsgConfig
 ---@field enabled boolean Whether to enable the plugin
@@ -46,9 +46,24 @@ M.default = {
       reasoning_effort = "minimal",
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
+      -- Per-model pricing (you can add more models here)
       pricing = {
-        input_per_million = 0.05,
-        output_per_million = 0.4,
+        ["gpt-5-nano"] = {
+          input_per_million = 0.05,
+          output_per_million = 0.4,
+        },
+        ["gpt-5-mini"] = {
+          input_per_million = 0.25,
+          output_per_million = 2.00,
+        },
+        ["gpt-4.1-mini"] = {
+          input_per_million = 0.80,
+          output_per_million = 3.20,
+        },
+        ["gpt-4.1-nano"] = {
+          input_per_million = 0.20,
+          output_per_million = 0.80,
+        },
       },
     },
     anthropic = {
@@ -58,8 +73,10 @@ M.default = {
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
       pricing = {
-        input_per_million = 0.80,
-        output_per_million = 4.00,
+        ["claude-3-5-haiku-20241022"] = {
+          input_per_million = 0.80,
+          output_per_million = 4.00,
+        },
       },
     },
     gemini = {
@@ -69,12 +86,17 @@ M.default = {
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
       pricing = {
-        input_per_million = 0.10,
-        output_per_million = 0.40,
+        ["gemini-2.5-flash-lite"] = {
+          input_per_million = 0.10,
+          output_per_million = 0.40,
+        },
+        ["gemini-2.5-flash"] = {
+          input_per_million = 0.30,
+          output_per_million = 2.50,
+        },
       },
     },
   },
 }
 
 return M
-

@@ -140,9 +140,12 @@ require("ai_commit_msg").setup({
       max_tokens = nil,  -- Uses model default
       -- Used to display cost per commit in notifications (see screenshot above)
       reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high" (only applies to reasoning models like gpt-5*)
+      -- Per-model pricing. Add entries for any models you use.
       pricing = {
-        input_per_million = 0.05,   -- Cost per million input tokens
-        output_per_million = 0.40,  -- Cost per million output tokens
+        ["gpt-5-nano"] = {
+          input_per_million = 0.05,   -- Cost per million input tokens
+          output_per_million = 0.40,  -- Cost per million output tokens
+        },
       },
       system_prompt = nil, -- Override to customize commit message generation instructions
     },
@@ -151,8 +154,10 @@ require("ai_commit_msg").setup({
       temperature = 0.3,
       max_tokens = 1000,  -- Required for Anthropic API
       pricing = {
-        input_per_million = 0.80,   -- Cost per million input tokens
-        output_per_million = 4.00,  -- Cost per million output tokens
+        ["claude-3-5-haiku-20241022"] = {
+          input_per_million = 0.80,   -- Cost per million input tokens
+          output_per_million = 4.00,  -- Cost per million output tokens
+        },
       },
       system_prompt = nil, -- Override to customize commit message generation instructions
     },
@@ -161,8 +166,10 @@ require("ai_commit_msg").setup({
       temperature = 0.3,
       max_tokens = 1000,
       pricing = {
-        input_per_million = 0.10,   -- Cost per million input tokens
-        output_per_million = 0.40,  -- Cost per million output tokens
+        ["gemini-2.5-flash-lite"] = {
+          input_per_million = 0.10,   -- Cost per million input tokens
+          output_per_million = 0.40,  -- Cost per million output tokens
+        },
       },
     },
   },
@@ -196,10 +203,12 @@ require("ai_commit_msg").setup({
     gemini = {
       model = "gemini-2.5-flash-lite",
       temperature = 0.5,
-      -- IMPORTANT: When overriding model, also update pricing for accurate cost display
+      -- Pricing is resolved by model. Add entries for any models you use.
       pricing = {
-        input_per_million = 0.10,   -- gemini-2.5-flash-lite pricing
-        output_per_million = 0.40,
+        ["gemini-2.5-flash-lite"] = {
+          input_per_million = 0.10,
+          output_per_million = 0.40,
+        },
       },
     },
   },
@@ -221,22 +230,15 @@ Include scope if applicable. Format: type(scope): description]], -- Override sys
 
 ## ⚠️ Important: Custom Model Pricing
 
-**When overriding the default model for any provider, you MUST also update the pricing information to ensure accurate cost calculations.** The plugin includes pricing for the default models, but if you use a different model, the cost display will be inaccurate unless you specify the correct pricing.
+The plugin includes default pricing for these models:
 
-Example:
-```lua
-require("ai_commit_msg").setup({
-  providers = {
-    gemini = {
-      model = "gemini-2.5-flash",  -- Using different model
-      pricing = {
-        input_per_million = 0.30,   -- Update to gemini-2.5-flash pricing
-        output_per_million = 2.50,
-      },
-    },
-  },
-})
-```
+- OpenAI: `gpt-5-nano`, `gpt-5-mini`, `gpt-4.1-mini`, `gpt-4.1-nano`
+- Anthropic: `claude-3-5-haiku-20241022`
+- Gemini: `gemini-2.5-flash-lite`, `gemini-2.5-flash`
+
+All other models: add the correct input/output pricing in your config to ensure accurate costs in notifications. If a model has no pricing entry, cost is simply omitted.
+
+Note on quality vs cost: Upgrading to OpenAI `gpt-5-mini` or `gpt-4.1-mini` (faster) generally yields better commit messages than the corresponding nano models, but at a higher cost.
 
 ## Commands
 

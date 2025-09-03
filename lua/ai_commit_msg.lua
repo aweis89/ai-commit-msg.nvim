@@ -10,8 +10,29 @@ function M.calculate_cost(usage, config)
     return nil
   end
 
-  local input_cost = (usage.input_tokens / 1000000) * config.pricing.input_per_million
-  local output_cost = (usage.output_tokens / 1000000) * config.pricing.output_per_million
+  -- Resolve pricing for current model with backwards compatibility:
+  -- 1) Flat table: { input_per_million, output_per_million }
+  -- 2) Map keyed by model: { [model] = { ... }, default = { ... } }
+  local pricing_def = config.pricing
+  local rates = nil
+
+  if pricing_def.input_per_million and pricing_def.output_per_million then
+    rates = pricing_def
+  else
+    local model = config.model
+    if pricing_def.models and type(pricing_def.models) == "table" then
+      rates = pricing_def.models[model] or pricing_def.default
+    else
+      rates = pricing_def[model] or pricing_def.default
+    end
+  end
+
+  if not rates or not rates.input_per_million or not rates.output_per_million then
+    return nil
+  end
+
+  local input_cost = (usage.input_tokens / 1000000) * rates.input_per_million
+  local output_cost = (usage.output_tokens / 1000000) * rates.output_per_million
   local total_cost = input_cost + output_cost
 
   return {
