@@ -48,9 +48,12 @@ Specification (follow exactly):
   - First line after header may be a one-sentence summary (optional), followed by
     bullets
   - Keep bullets to one line when possible; wrap at ~72 characters
+  - IMPORTANT: Group similar changes into single points (e.g., "adjust multiple 
+    error messages" not separate bullets for each)
+  - Only create separate bullets for truly independent changes or different aspects
   - Use bullets to capture:
-    - key rationale (why)
-    - user-visible behavior changes
+    - key rationale (why) - grouped when related
+    - user-visible behavior changes - summarized when similar
     - notable trade-offs or risks
     - secondary areas touched (e.g., ui, docs, deps)
   - Acceptable bullet formats:
@@ -103,7 +106,8 @@ Task:
    - Features or functions that were already present
    - Context that wasn't modified
 4) Focus ONLY on lines with +/- in the diff (additions, deletions, modifications).
-5) If multiple independent changes are present, summarize the primary one; do not emit multiple commits.
+5) Group similar or related changes together - don't list every minor modification separately.
+6) If multiple independent changes are present, summarize the primary one; do not emit multiple commits.
 
 Return ONLY the commit message.
 
