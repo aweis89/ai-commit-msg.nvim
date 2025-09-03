@@ -47,8 +47,8 @@ local default_config = {
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
       pricing = {
-        input_per_million = 0.40,
-        output_per_million = 1.60,
+        input_per_million = 0.80,
+        output_per_million = 3.20,
       },
     },
     anthropic = {
