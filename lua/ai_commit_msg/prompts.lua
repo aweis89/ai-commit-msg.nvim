@@ -98,7 +98,12 @@ Input:
 Task:
 1) Determine the correct type, optional scope, and whether the change is breaking.
 2) Produce a single Conventional Commit message (header; optional bullet-style body; optional footer(s)).
-3) If multiple independent changes are present, summarize the primary one; do not emit multiple commits.
+3) IMPORTANT: Only describe what ACTUALLY CHANGED in the diff. Do NOT mention:
+   - Existing code that remains unchanged
+   - Features or functions that were already present
+   - Context that wasn't modified
+4) Focus ONLY on lines with +/- in the diff (additions, deletions, modifications).
+5) If multiple independent changes are present, summarize the primary one; do not emit multiple commits.
 
 Return ONLY the commit message.
 
