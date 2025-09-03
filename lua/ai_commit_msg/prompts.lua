@@ -20,6 +20,8 @@ Specification (follow exactly):
   <type>[optional scope][!]: <description>
   [optional body]
   [optional footer(s)]
+  - Header length MUST be <= 72 characters total (type/scope/! + ": " + description). If
+    longer, shorten the description or scope; do not wrap the header.
 
 - Allowed types (lowercase):
   feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
@@ -41,16 +43,19 @@ Specification (follow exactly):
   - Required, concise, imperative mood (e.g., "add", "fix", "update"; not "added"
     or "adds")
   - No trailing punctuation
-  - Aim for ≤ 72 characters
+  - MUST keep the entire header (including type/scope) <= 72 characters
 
 - Body (optional, bullet-style guidance):
   - Prefer concise bullet points starting with "- "
   - First line after header may be a one-sentence summary (optional), followed by
     bullets
-  - Keep bullets to one line when possible; wrap at ~72 characters
-  - IMPORTANT: Group similar changes into single points (e.g., "adjust multiple 
-    error messages" not separate bullets for each)
+  - Keep bullets to a single line; if longer, rewrite to fit ~72 characters
+  - Do NOT repeat the header description in the body; add only new context
+  - IMPORTANT: Group similar changes into a single point (e.g., "adjust multiple
+    error messages"), not separate bullets for each
   - Only create separate bullets for truly independent changes or different aspects
+  - Avoid file-by-file or function-by-function lists; summarize impacts instead
+  - Limit body to at most 5 bullets; prefer 3-4 meaningful points
   - Use bullets to capture:
     - key rationale (why) - grouped when related
     - user-visible behavior changes - summarized when similar
@@ -79,6 +84,7 @@ Specification (follow exactly):
 Validation rules:
 - Must include a valid type from the list.
 - Description must be present and imperative.
+- Header (type/scope/! + description) must be <= 72 characters.
 - If "!" is used, a BREAKING CHANGE footer is mandatory.
 - No markdown, code fences, or commentary.
 - No emojis.
@@ -153,6 +159,41 @@ docs(readme): clarify setup for Apple Silicon
 - add troubleshooting section for OpenSSL errors
 
 Closes #615
+]]
+
+-- Short prompt variant for tiny diffs (single-line output only)
+M.SHORT_SYSTEM_PROMPT = [[
+# System Prompt: Conventional Commit (Short, Single-Line)
+
+You will output exactly one single-line Conventional Commit header for tiny diffs.
+Use this when the input shows a trivial or very small change (e.g., a few lines,
+simple typo fix, minor refactor, formatting, or a small config tweak).
+
+Output requirements:
+- Output must be a single header line only; no body, no footers.
+- No quotes, markdown, or explanations.
+- Keep the entire header <= 72 characters; if longer, shorten the description/scope.
+
+Specification:
+- Format: <type>[optional scope][!]: <description>
+- Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+- Scope: optional, lowercase in parentheses (e.g., (ui), (api), (deps))
+- Description: imperative mood, concise, no trailing punctuation
+- If the change is a revert, use type "revert" and the reverted header as the description
+  (still keep <= 72 characters); omit the body line about the hash in this short mode.
+
+Rules:
+- Describe only what actually changed in the diff; avoid extra context.
+- Prefer specific nouns over vague phrasing (e.g., "button label" over "text").
+- Do not mention files unless it clarifies scope succinctly.
+- Do not add issue references or co-authors in this short mode.
+
+Examples:
+- fix(ui): correct modal focus trap
+- docs(readme): fix typo in heading
+- style(fmt): apply stylua formatting
+- chore(deps): bump lua-cjson from 2.1.0 to 2.1.1
+- refactor(router): inline trivial helper
 ]]
 
 return M
