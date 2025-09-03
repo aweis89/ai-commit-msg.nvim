@@ -240,7 +240,7 @@ All other models: add the correct input/output pricing in your config to ensure 
 
 Note on defaults: The plugin's default model choices may change over time to provide the best balance of quality and price. If you want to ensure a specific model is always used, explicitly pin it in your config (for example, `providers.gemini.model = "gemini-2.5-flash-lite"` or `providers.openai.model = "gpt-5-mini"`).
 
-Note on quality vs cost: Upgrading to OpenAI `gpt-5-mini` or `gpt-4.1-mini` (faster) generally yields better commit messages than the corresponding nano models, but at a higher cost.
+Note on quality vs cost: Using OpenAI `gpt-5-mini` or `gpt-4.1-mini` (faster) generally yields better commit messages than the corresponding nano models, but at a higher cost.
 
 ## Commands
 
