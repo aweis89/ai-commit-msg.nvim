@@ -135,14 +135,14 @@ require("ai_commit_msg").setup({
   -- Provider-specific configurations
   providers = {
     openai = {
-      model = "gpt-5-mini",
+      model = "gpt-5-nano",
       temperature = 0.3,
       max_tokens = nil,  -- Uses model default
       -- Used to display cost per commit in notifications (see screenshot above)
       reasoning_effort = "minimal",  -- Options: "minimal", "medium", "high" (only applies to reasoning models like gpt-5*)
       pricing = {
-        input_per_million = 0.25,   -- Cost per million input tokens
-        output_per_million = 2.00,  -- Cost per million output tokens
+        input_per_million = 0.05,   -- Cost per million input tokens
+        output_per_million = 0.40,  -- Cost per million output tokens
       },
       system_prompt = nil, -- Override to customize commit message generation instructions
     },
