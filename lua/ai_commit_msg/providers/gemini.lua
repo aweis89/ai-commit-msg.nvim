@@ -114,17 +114,17 @@ function M.call_api(config, diff, callback)
 
       if text then
         local commit_msg = text
-      commit_msg = commit_msg:gsub("^```%w*\n", ""):gsub("\n```$", ""):gsub("^`", ""):gsub("`$", "")
-      commit_msg = vim.trim(commit_msg)
+        commit_msg = commit_msg:gsub("^```%w*\n", ""):gsub("\n```$", ""):gsub("^`", ""):gsub("`$", "")
+        commit_msg = vim.trim(commit_msg)
 
-      -- Extract token usage if available
-      local usage = nil
-      if response.usageMetadata then
-        usage = {
-          input_tokens = response.usageMetadata.promptTokenCount or 0,
-          output_tokens = response.usageMetadata.candidatesTokenCount or 0,
-        }
-      end
+        -- Extract token usage if available
+        local usage = nil
+        if response.usageMetadata then
+          usage = {
+            input_tokens = response.usageMetadata.promptTokenCount or 0,
+            output_tokens = response.usageMetadata.candidatesTokenCount or 0,
+          }
+        end
 
         callback(true, commit_msg, usage)
         return
