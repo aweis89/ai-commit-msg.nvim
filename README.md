@@ -135,7 +135,7 @@ require("ai_commit_msg").setup({
   -- Provider-specific configurations
   providers = {
     openai = {
-      model = "gpt-5-nano",
+      model = "gpt-5-mini",
       temperature = 0.3,
       max_tokens = nil,  -- Uses model default
       -- Used to display cost per commit in notifications (see screenshot above)
@@ -238,7 +238,7 @@ The plugin includes default pricing for these models:
 
 All other models: add the correct input/output pricing in your config to ensure accurate costs in notifications. If a model has no pricing entry, cost is simply omitted.
 
-Note on defaults: The plugin's default model choices may change over time to provide the best balance of quality and price. If you want to ensure a specific model is always used, explicitly pin it in your config (for example, `providers.gemini.model = "gemini-2.5-flash-lite"` or `providers.openai.model = "gpt-5-nano"`).
+Note on defaults: The plugin's default model choices may change over time to provide the best balance of quality and price. If you want to ensure a specific model is always used, explicitly pin it in your config (for example, `providers.gemini.model = "gemini-2.5-flash-lite"` or `providers.openai.model = "gpt-5-mini"`).
 
 Note on quality vs cost: Upgrading to OpenAI `gpt-5-mini` or `gpt-4.1-mini` (faster) generally yields better commit messages than the corresponding nano models, but at a higher cost.
 
@@ -261,7 +261,7 @@ require("ai_commit_msg").setup({
   provider = "openai",
   providers = {
     openai = {
-      model = "gpt-5-nano", -- pin to a specific model
+      model = "gpt-5-mini", -- pin to a specific model
     },
   },
 })
