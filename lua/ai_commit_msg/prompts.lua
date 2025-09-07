@@ -108,7 +108,7 @@ Input:
 
 Task:
 1) Determine the correct type, optional scope, and whether the change is breaking.
-2) Produce a single Conventional Commit message (header; optional bullet-style body; optional footer(s)).
+2) Produce a SINGLE Conventional Commit message (header; optional bullet-style body; optional footer(s)).
 3) IMPORTANT: Only describe what ACTUALLY CHANGED in the diff. Do NOT mention:
    - Existing code that remains unchanged
    - Features or functions that were already present
