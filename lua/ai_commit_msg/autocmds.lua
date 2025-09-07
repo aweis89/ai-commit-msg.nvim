@@ -72,15 +72,52 @@ function M.setup(config)
           vim.schedule(function()
             local first_line_content = vim.api.nvim_buf_get_lines(arg.buf, 0, 1, false)[1]
             if first_line_content == nil or vim.fn.trim(first_line_content) == "" then
+              -- Empty commit: replace the first line with the generated message
               vim.api.nvim_buf_set_lines(arg.buf, 0, 1, false, vim.split(message, "\n"))
             else
+              -- Non-empty commit present: append the generated message as commented
+              -- lines directly below the current commit message (before git's
+              -- template comments), handling multi-line commit bodies.
+
+              -- Gather current buffer lines
+              local lines = vim.api.nvim_buf_get_lines(arg.buf, 0, -1, false)
+
+              -- Find the first line that starts a comment block (e.g. git template)
+              local insert_row0 = #lines -- default to end of buffer (0-based)
+              for i = 1, #lines do
+                local l = lines[i]
+                if type(l) == "string" and l:sub(1, 1) == "#" then
+                  insert_row0 = i - 1
+                  break
+                end
+              end
+
+              -- Prepare commented version of the generated message
               local comment_prefix = "# "
               local commented_msg_lines = {}
               for _, line in ipairs(vim.split(message, "\n")) do
                 table.insert(commented_msg_lines, comment_prefix .. line)
               end
-              vim.api.nvim_buf_set_lines(arg.buf, 1, 1, false, { "" })
-              vim.api.nvim_buf_set_lines(arg.buf, 2, 2, false, commented_msg_lines)
+
+              -- Insert a single blank line before the commented block if the line
+              -- directly above the insertion point isn't already blank.
+              local to_insert = {}
+              if insert_row0 > 0 then
+                local prev = lines[insert_row0] -- 1-based table index for row-1
+                if prev ~= nil and vim.fn.trim(prev) ~= "" then
+                  table.insert(to_insert, "")
+                end
+              else
+                -- Inserting at top (edge case): add a blank line to avoid touching
+                -- user's first line directly.
+                table.insert(to_insert, "")
+              end
+
+              -- Add the commented message lines
+              vim.list_extend(to_insert, commented_msg_lines)
+
+              -- Perform a single insertion at the computed position
+              vim.api.nvim_buf_set_lines(arg.buf, insert_row0, insert_row0, false, to_insert)
             end
           end)
         else
