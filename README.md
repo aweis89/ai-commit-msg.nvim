@@ -22,6 +22,7 @@ perfect commit message.
 - 🔑 Uses `GEMINI_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY` environment variables for authentication
 - ⚙️ Configurable model, temperature, and max tokens
 - 🔄 Optional push prompt after successful commits
+- ⬇️⬆️ Pull before push to reduce rejections (configurable with args)
 - ⌨️ Customizable keymaps for commit buffer
 - 📊 Optional spinner and notifications during generation
 
@@ -114,6 +115,11 @@ require("ai_commit_msg").setup({
   
   -- Whether to prompt for push after commit
   auto_push_prompt = true,
+  -- Pull-before-push behavior (helps avoid rejected pushes)
+  pull_before_push = {
+    enabled = true,                     -- run a pull before pushing
+    args = { "--rebase", "--autostash" }, -- arguments passed to `git pull`
+  },
   
   -- Show spinner while generating
   spinner = true,

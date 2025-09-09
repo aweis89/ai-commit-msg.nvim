@@ -20,6 +20,7 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 ---@field provider string AI provider to use ("openai", "anthropic", or "gemini")
 ---@field providers table<string, ProviderConfig> Provider-specific configurations
 ---@field auto_push_prompt boolean Whether to prompt for push after commit
+---@field pull_before_push { enabled: boolean, args: string[] } Whether and how to run `git pull` before pushing
 ---@field spinner boolean Whether to show a spinner while generating
 ---@field notifications boolean Whether to show notifications
 ---@field context_lines number Number of surrounding lines to include in git diff
@@ -31,6 +32,10 @@ M.default = {
   enabled = true,
   provider = "gemini",
   auto_push_prompt = true,
+  pull_before_push = {
+    enabled = true,
+    args = { "--rebase", "--autostash" },
+  },
   spinner = true,
   notifications = true,
   context_lines = 10,
