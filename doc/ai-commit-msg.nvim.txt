@@ -1,4 +1,4 @@
-*ai-commit-msg.nvim.txt*   For Neovim >= 0.8.0  Last change: 2025 September 07
+*ai-commit-msg.nvim.txt*   For Neovim >= 0.8.0  Last change: 2025 September 09
 
 ==============================================================================
 Table of Contents                       *ai-commit-msg.nvim-table-of-contents*
@@ -45,7 +45,7 @@ FEATURES                      *ai-commit-msg.nvim-ai-commit-msg.nvim-features*
 - Uses `GEMINI_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY` environment variables for authentication
 - Configurable model, temperature, and max tokens
 - Optional push prompt after successful commits
-- Pull-before-push option to reduce rejected pushes (configurable args)
+- Pull before push to reduce rejections (configurable with args)
 - Customizable keymaps for commit buffer
 - Optional spinner and notifications during generation
 
@@ -144,11 +144,10 @@ CONFIGURATION            *ai-commit-msg.nvim-ai-commit-msg.nvim-configuration*
       
       -- Whether to prompt for push after commit
       auto_push_prompt = true,
-      
       -- Pull-before-push behavior (helps avoid rejected pushes)
       pull_before_push = {
-        enabled = true,                          -- run a pull before pushing
-        args = { "--rebase", "--autostash" },  -- arguments passed to `git pull`
+        enabled = true,                     -- run a pull before pushing
+        args = { "--rebase", "--autostash" }, -- arguments passed to `git pull`
       },
       
       -- Show spinner while generating
