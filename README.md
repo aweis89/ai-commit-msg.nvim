@@ -15,7 +15,7 @@ perfect commit message.
 
 ## Features
 
-- 🤖 Automatically generates commit messages using Gemini, OpenAI, or Anthropic APIs
+- 🤖 Automatically generates commit messages using Gemini, OpenAI, Anthropic, or GitHub Copilot APIs
   when you run `git commit -v`
 - 🎯 Works from terminal or within Neovim (using vim-fugitive)
 - 🤝 Non-intrusive - if you start typing, AI suggestions are added as comments instead
@@ -94,6 +94,12 @@ export OPENAI_API_KEY="your-api-key-here"
 **For Anthropic:**
 
 ```bash
+export COPILOT_TOKEN="your-github-copilot-token-here"
+```
+
+**For Anthropic:**
+
+```bash
 export ANTHROPIC_API_KEY="your-api-key-here"
 ```
 
@@ -110,7 +116,7 @@ require("ai_commit_msg").setup({
   -- Enable/disable the plugin
   enabled = true,
   
-  -- AI provider to use ("gemini", "openai", or "anthropic")
+  -- AI provider to use ("gemini", "openai", "anthropic", or "copilot")
   provider = "gemini",
   
   -- Whether to prompt for push after commit
@@ -189,6 +195,21 @@ require("ai_commit_msg").setup({
 ```lua
 require("ai_commit_msg").setup({
   provider = "openai",
+})
+```
+
+### Switch to Anthropic Claude
+
+### Switch to GitHub Copilot
+
+```lua
+require("ai_commit_msg").setup({
+  provider = "copilot",
+  providers = {
+    copilot = {
+      model = "gpt-5-mini",
+    },
+  },
 })
 ```
 
@@ -320,6 +341,7 @@ git config --global core.editor nvim
   - Gemini: Set `GEMINI_API_KEY` environment variable (default, best value)
   - OpenAI: Set `OPENAI_API_KEY` environment variable
   - Anthropic: Set `ANTHROPIC_API_KEY` environment variable
+  - GitHub Copilot: Set `COPILOT_TOKEN` environment variable
 - Git
 - curl (for making API requests)
 

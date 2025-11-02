@@ -10,7 +10,11 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 ---@field max_tokens number|nil Maximum tokens in the response
 ---@field prompt string Prompt to send to the AI
 ---@field system_prompt string System prompt that defines the AI's role and behavior
----@field reasoning_effort string|nil Reasoning effort for models that support it ("minimal", "medium", "high")
+---@field reasoning_effort string|nil Reasoning effort for models that support it. Valid values:
+---  - "minimal": Fastest and cheapest. Least amount of "thinking". Best for simple, high-volume tasks like formatting or basic Q&A.
+---  - "low": Balance between speed and quality. Good for standard tasks like summarization.
+---  - "medium": Default-quality balance for creative and professional work.
+---  - "high": Most expensive and thorough; model performs deep, step-by-step reasoning (best for complex problems and debugging).
 ---@field pricing table|nil Pricing information for cost calculation. Supports:
 ---  - Flat table: { input_per_million, output_per_million } (backwards compatible)
 ---  - Map keyed by model: { ["model-name"] = { input_per_million, output_per_million }, default = { ... } }
@@ -107,6 +111,7 @@ M.default = {
       max_tokens = 10000,
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
+      reasoning_effort = "minimal",
       pricing = {},
     },
   },

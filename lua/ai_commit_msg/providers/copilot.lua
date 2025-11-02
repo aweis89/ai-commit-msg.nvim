@@ -44,6 +44,11 @@ function M.call_api(config, diff, callback)
     payload_data.temperature = config.temperature
   end
 
+  -- Add reasoning effort for GitHub Copilot models if configured
+  if config.reasoning_effort then
+    payload_data.reasoning_effort = config.reasoning_effort
+  end
+
   local payload = vim.json.encode(payload_data)
 
   local curl_args = {

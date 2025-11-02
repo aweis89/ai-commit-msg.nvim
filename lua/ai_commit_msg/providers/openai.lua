@@ -53,7 +53,7 @@ function M.call_api(config, diff, callback)
     max_completion_tokens = config.max_tokens,
   }
 
-  -- Only add reasoning_effort for supported models
+  -- Only add reasoning (effort) for supported models
   if config.reasoning_effort and model_supports_reasoning_effort(config.model) then
     payload_data.reasoning_effort = config.reasoning_effort
   end
