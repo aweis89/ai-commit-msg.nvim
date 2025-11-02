@@ -102,6 +102,13 @@ M.default = {
         },
       },
     },
+    copilot = {
+      model = "gpt-5-mini",
+      max_tokens = 10000,
+      prompt = DEFAULT_PROMPT,
+      system_prompt = DEFAULT_SYSTEM_PROMPT,
+      pricing = {},
+    },
   },
 }
 

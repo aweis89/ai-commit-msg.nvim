@@ -35,9 +35,14 @@ function M.call_api(config, diff, callback)
       { role = "user", content = prompt },
     },
     max_completion_tokens = config.max_tokens,
-    temperature = config.temperature,
     n = 1,
   }
+
+  -- Some Copilot (GitHub) gpt-5* models do not accept a custom `temperature` field.
+  -- Only include `temperature` when the configured model is not a gpt-5 variant.
+  if not (config.model and config.model:match("^gpt%-5")) then
+    payload_data.temperature = config.temperature
+  end
 
   local payload = vim.json.encode(payload_data)
 
