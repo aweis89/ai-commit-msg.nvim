@@ -185,6 +185,11 @@ require("ai_commit_msg").setup({
       },
     },
   },
+  copilot = {
+    model = "gpt-5-mini",
+    max_tokens = 10000,
+    reasoning_effort = "minimal",
+  },
 })
 ```
 
