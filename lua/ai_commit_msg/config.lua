@@ -6,7 +6,7 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 
 ---@class ProviderConfig
 ---@field model string Model to use for this provider
----@field temperature number Temperature for the model (0.0 to 1.0)
+---@field temperature number|nil Temperature for the model (0.0 to 1.0)
 ---@field max_tokens number|nil Maximum tokens in the response
 ---@field prompt string Prompt to send to the AI
 ---@field system_prompt string System prompt that defines the AI's role and behavior

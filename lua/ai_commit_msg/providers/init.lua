@@ -8,6 +8,8 @@ function M.get_provider(config)
     return require("ai_commit_msg.providers.anthropic")
   elseif provider_name == "gemini" then
     return require("ai_commit_msg.providers.gemini")
+  elseif provider_name == "copilot" then
+    return require("ai_commit_msg.providers.copilot")
   else
     error("Unsupported provider: " .. tostring(provider_name))
   end
