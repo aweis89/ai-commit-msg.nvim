@@ -1,5 +1,16 @@
 local M = {}
 
+-- Models that support reasoning_effort parameter
+local REASONING_EFFORT_MODELS = {
+  ["gpt-5-nano"] = true,
+  ["gpt-5-mini"] = true,
+  ["gpt-5"] = true,
+}
+
+local function model_supports_reasoning_effort(model)
+  return REASONING_EFFORT_MODELS[model] or model:match("^gpt%-5")
+end
+
 -- Copilot provider using GitHub Models API chat completions
 -- Reads token from `config.token` (no env var usage)
 function M.call_api(config, diff, callback)
@@ -34,9 +45,13 @@ function M.call_api(config, diff, callback)
       { role = "system", content = config.system_prompt },
       { role = "user", content = prompt },
     },
-    max_completion_tokens = config.max_tokens,
     n = 1,
   }
+
+  -- Only add max_completion_tokens if explicitly set
+  if config.max_tokens then
+    payload_data.max_completion_tokens = config.max_tokens
+  end
 
   -- Some Copilot (GitHub) gpt-5* models do not accept a custom `temperature` field.
   -- Only include `temperature` when the configured model is not a gpt-5 variant.
@@ -44,8 +59,8 @@ function M.call_api(config, diff, callback)
     payload_data.temperature = config.temperature
   end
 
-  -- Add reasoning effort for GitHub Copilot models if configured
-  if config.reasoning_effort then
+  -- Only add reasoning_effort for gpt-5 models that support it
+  if config.reasoning_effort and config.model and model_supports_reasoning_effort(config.model) then
     payload_data.reasoning_effort = config.reasoning_effort
   end
 

@@ -78,7 +78,7 @@ M.default = {
     anthropic = {
       model = "claude-3-5-haiku-20241022",
       temperature = 0.3,
-      max_tokens = 2000,
+      max_tokens = nil,
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
       pricing = {
@@ -91,7 +91,7 @@ M.default = {
     gemini = {
       model = "gemini-2.5-flash-lite",
       temperature = 0.3,
-      max_tokens = 4000,
+      max_tokens = nil,
       reasoning_effort = "none",
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
@@ -107,11 +107,10 @@ M.default = {
       },
     },
     copilot = {
-      model = "gpt-5-mini",
-      max_tokens = 10000,
+      model = "gpt-4.1",
+      max_tokens = nil,
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
-      reasoning_effort = "minimal",
       pricing = {},
     },
   },

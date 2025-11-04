@@ -21,11 +21,8 @@ function M.call_api(config, diff, callback)
 
   vim.notify("ai-commit-msg.nvim: Prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
 
-  local max_tokens = config.max_tokens or 1000
-
-  local payload = vim.json.encode({
+  local payload_data = {
     model = config.model,
-    max_tokens = max_tokens,
     messages = {
       {
         role = "user",
@@ -33,7 +30,14 @@ function M.call_api(config, diff, callback)
       },
     },
     system = config.system_prompt,
-  })
+  }
+
+  -- Only add max_tokens if explicitly set
+  if config.max_tokens then
+    payload_data.max_tokens = config.max_tokens
+  end
+
+  local payload = vim.json.encode(payload_data)
 
   local curl_args = {
     "curl",

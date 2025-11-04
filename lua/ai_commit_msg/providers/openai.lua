@@ -50,11 +50,15 @@ function M.call_api(config, diff, callback)
         content = prompt,
       },
     },
-    max_completion_tokens = config.max_tokens,
   }
 
-  -- Only add reasoning (effort) for supported models
-  if config.reasoning_effort and model_supports_reasoning_effort(config.model) then
+  -- Only add max_completion_tokens if explicitly set
+  if config.max_tokens then
+    payload_data.max_completion_tokens = config.max_tokens
+  end
+
+  -- Only add reasoning_effort for gpt-5 models that support it
+  if config.reasoning_effort and config.model and model_supports_reasoning_effort(config.model) then
     payload_data.reasoning_effort = config.reasoning_effort
   end
 

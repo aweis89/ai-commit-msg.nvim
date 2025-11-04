@@ -21,8 +21,6 @@ function M.call_api(config, diff, callback)
 
   vim.notify("ai-commit-msg.nvim: Prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
 
-  local max_tokens = config.max_tokens or 1000
-
   -- Prefer using systemInstruction + user content for clarity
   local payload_tbl = {
     systemInstruction = {
@@ -39,10 +37,14 @@ function M.call_api(config, diff, callback)
       },
     },
     generationConfig = {
-      maxOutputTokens = max_tokens,
       temperature = config.temperature or 0.3,
     },
   }
+
+  -- Only add maxOutputTokens if explicitly set
+  if config.max_tokens then
+    payload_tbl.generationConfig.maxOutputTokens = config.max_tokens
+  end
 
   -- Do not include reasoningEffort: Gemini API rejects unknown fields
 
