@@ -1,4 +1,4 @@
-*ai-commit-msg.nvim.txt*   For Neovim >= 0.8.0   Last change: 2025 November 04
+*ai-commit-msg.nvim.txt*   For Neovim >= 0.8.0   Last change: 2025 November 13
 
 ==============================================================================
 Table of Contents                       *ai-commit-msg.nvim-table-of-contents*
