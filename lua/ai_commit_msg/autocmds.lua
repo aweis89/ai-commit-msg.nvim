@@ -46,50 +46,49 @@ function M.setup(config)
               local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
               vim.ui.input({ prompt = prompt_message }, function(input)
                 if input and input:lower() == "y" then
-                  -- Pull-before-push configuration (table only)
                   local pull_cfg = type(config.pull_before_push) == "table" and config.pull_before_push
                     or { enabled = true, args = { "--rebase", "--autostash" } }
                   local pull_enabled = (pull_cfg.enabled ~= false)
                   local pull_args = type(pull_cfg.args) == "table" and pull_cfg.args or { "--rebase", "--autostash" }
 
-                  if vim.fn.exists(":Git") > 0 then
-                    if pull_enabled then
-                      local args_str = table.concat(pull_args, " ")
-                      pcall(vim.cmd, "silent! Git pull " .. args_str)
-                    end
-                    vim.cmd("Git push")
-                  else
-                    vim.notify("Pushing commit...", vim.log.levels.INFO)
-                    local function do_push()
-                      vim.system({ "git", "push" }, {}, function(obj)
-                        vim.schedule(function()
-                          local output = obj.stdout or obj.stderr or ""
-                          if output ~= "" then
-                            vim.notify(vim.fn.trim(output), vim.log.levels.INFO)
-                          end
-                        end)
-                      end)
-                    end
+                  local function do_push()
+                    vim.cmd.tabnew()
+                    local term_buf = vim.api.nvim_get_current_buf()
+                    vim.fn.termopen("git push", {
+                      on_exit = function(_, exit_code, _)
+                        if exit_code == 0 then
+                          vim.schedule(function()
+                            vim.api.nvim_buf_delete(term_buf, { force = true })
+                            vim.notify("Push successful", vim.log.levels.INFO)
+                          end)
+                        else
+                          vim.schedule(function()
+                            vim.notify("Push failed - check terminal for details", vim.log.levels.ERROR)
+                          end)
+                        end
+                      end,
+                    })
+                    vim.cmd.startinsert()
+                  end
 
-                    if pull_enabled then
-                      vim.notify("Pulling latest changes before push...", vim.log.levels.INFO)
-                      local cmd = { "git", "pull" }
-                      for _, a in ipairs(pull_args) do
-                        table.insert(cmd, a)
-                      end
-                      vim.system(cmd, {}, function(pull_obj)
-                        vim.schedule(function()
-                          if pull_obj.code == 0 then
-                            do_push()
-                          else
-                            local err = pull_obj.stderr or pull_obj.stdout or "git pull failed"
-                            vim.notify("git pull failed; aborting push: " .. vim.fn.trim(err), vim.log.levels.ERROR)
-                          end
-                        end)
-                      end)
-                    else
-                      do_push()
+                  if pull_enabled then
+                    vim.notify("Pulling latest changes before push...", vim.log.levels.INFO)
+                    local cmd = { "git", "pull" }
+                    for _, a in ipairs(pull_args) do
+                      table.insert(cmd, a)
                     end
+                    vim.system(cmd, {}, function(pull_obj)
+                      vim.schedule(function()
+                        if pull_obj.code == 0 then
+                          do_push()
+                        else
+                          local err = pull_obj.stderr or pull_obj.stdout or "git pull failed"
+                          vim.notify("git pull failed; aborting push: " .. vim.fn.trim(err), vim.log.levels.ERROR)
+                        end
+                      end)
+                    end)
+                  else
+                    do_push()
                   end
                 end
               end)
