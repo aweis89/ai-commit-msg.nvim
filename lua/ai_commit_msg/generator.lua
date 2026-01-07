@@ -104,7 +104,9 @@ function M.generate(config, callback)
       return
     end
 
-    vim.notify("ai-commit-msg.nvim: Calling AI API", vim.log.levels.DEBUG)
+    vim.schedule(function()
+      vim.notify("ai-commit-msg.nvim: Calling AI API", vim.log.levels.DEBUG)
+    end)
 
     local start_time = vim.uv.hrtime()
 
