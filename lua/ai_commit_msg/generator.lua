@@ -19,7 +19,9 @@ local function call_api(config, diff, callback)
 end
 
 function M.generate(config, callback)
-  vim.notify("ai-commit-msg.nvim: Starting generation", vim.log.levels.DEBUG)
+  vim.schedule(function()
+    vim.notify("ai-commit-msg.nvim: Starting generation", vim.log.levels.DEBUG)
+  end)
 
   local spinner_timer
   local notif_id = "ai-commit-msg"
@@ -42,7 +44,9 @@ function M.generate(config, callback)
       spinner_timer:start(0, 100, vim.schedule_wrap(update_spinner))
     end
   elseif config.notifications then
-    notify("Generating commit message...", vim.log.levels.INFO, config)
+    vim.schedule(function()
+      notify("Generating commit message...", vim.log.levels.INFO, config)
+    end)
   end
 
   -- Get git diff first
