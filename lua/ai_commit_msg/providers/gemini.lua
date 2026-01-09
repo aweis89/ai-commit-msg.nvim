@@ -19,7 +19,9 @@ function M.call_api(config, diff, callback)
     prompt = config.prompt .. "\n\n" .. diff
   end
 
-  vim.notify("ai-commit-msg.nvim: Prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
+  vim.schedule(function()
+    vim.notify("ai-commit-msg.nvim: Prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
+  end)
 
   -- Prefer using systemInstruction + user content for clarity
   local payload_tbl = {
@@ -87,7 +89,9 @@ function M.call_api(config, diff, callback)
       return
     end
 
-    vim.notify("ai-commit-msg.nvim: Full API response: " .. vim.inspect(response), vim.log.levels.DEBUG)
+    vim.schedule(function()
+      vim.notify("ai-commit-msg.nvim: Full API response: " .. vim.inspect(response), vim.log.levels.DEBUG)
+    end)
 
     if response.candidates and response.candidates[1] then
       local cand = response.candidates[1]
