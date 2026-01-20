@@ -107,7 +107,7 @@ function M.call_api(config, diff, callback)
       commit_msg = vim.trim(commit_msg)
 
       local usage = nil
-      if response.usage then
+      if response.usage and type(response.usage) == "table" then
         usage = {
           input_tokens = response.usage.prompt_tokens or response.usage.input_tokens,
           output_tokens = response.usage.completion_tokens or response.usage.output_tokens,
@@ -135,7 +135,7 @@ function M.call_api(config, diff, callback)
     commit_msg = vim.trim(commit_msg)
 
     local usage = nil
-    if response.usage then
+    if response.usage and type(response.usage) == "table" then
       usage = {
         input_tokens = response.usage.prompt_tokens or response.usage.input_tokens,
         output_tokens = response.usage.completion_tokens or response.usage.output_tokens,
