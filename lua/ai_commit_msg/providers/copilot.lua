@@ -117,7 +117,7 @@ local function get_copilot_token(callback)
       if waited >= max_wait then
         return true
       end
-      return _copilot_token and _copilot_token.expires_at and _copilot_token.expires_at > os.time()
+      return _copilot_token ~= nil and _copilot_token.expires_at ~= nil and _copilot_token.expires_at > os.time()
     end, 50)
 
     if _copilot_token and _copilot_token.expires_at and _copilot_token.expires_at > os.time() then
