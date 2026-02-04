@@ -1,4 +1,5 @@
 local M = {}
+local EDITOR_VERSION = "Neovim/" .. vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch
 
 -- Models that support reasoning_effort parameter
 local REASONING_EFFORT_MODELS = {
@@ -265,13 +266,11 @@ function M._make_api_call(token, endpoints, config, diff, callback)
     "-H",
     "Authorization: Bearer " .. token,
     "-H",
-    "Editor-Version: vscode/1.105.1",
+    "Editor-Version: " .. EDITOR_VERSION,
     "-H",
-    "Editor-Plugin-Version: copilot-chat/0.26.7",
+    "Editor-Plugin-Version: ai-commit-msg.nvim/*",
     "-H",
     "Copilot-Integration-Id: vscode-chat",
-    "-H",
-    "User-Agent: GitHubCopilotChat/0.26.7",
     "-d",
     payload,
     "--silent",
