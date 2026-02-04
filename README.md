@@ -19,7 +19,8 @@ perfect commit message.
   when you run `git commit -v`
 - 🎯 Works from terminal or within Neovim (using vim-fugitive)
 - 🤝 Non-intrusive - if you start typing, AI suggestions are added as comments instead
-- 🔑 Uses `GEMINI_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY` environment variables for authentication
+- 🔑 Uses `GEMINI_API_KEY`, `OPENAI_API_KEY`, `COPILOT_TOKEN`, or `ANTHROPIC_API_KEY` environment variables for authentication
+- 🔐 Copilot: automatically uses existing authentication from copilot.lua or copilot.vim (no token needed)
 - ⚙️ Configurable model, temperature, and max tokens
 - 🔄 Optional push prompt after successful commits
 - ⬇️⬆️ Pull before push to reduce rejections (configurable with args)
@@ -91,7 +92,9 @@ export GEMINI_API_KEY="your-api-key-here"
 export OPENAI_API_KEY="your-api-key-here"
 ```
 
-**For Anthropic:**
+**For Copilot:**
+
+If you're already using [copilot.lua](https://github.com/zbirenbaum/copilot.lua) or [copilot.vim](https://github.com/github/copilot.vim), authentication is automatic, no setup needed. Otherwise:
 
 ```bash
 export COPILOT_TOKEN="your-github-copilot-token-here"
@@ -127,8 +130,8 @@ require("ai_commit_msg").setup({
     args = { "--rebase", "--autostash" }, -- arguments passed to `git pull`
   },
   
-  -- Show spinner while generating
-  spinner = true,
+  -- Show spinner while generating (true for default, false to disable, or custom frames array)
+  spinner = true, -- Can also be false or { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
   
   -- Show notifications
   notifications = true,
@@ -352,7 +355,7 @@ git config --global core.editor nvim
 
 ## Tips
 
-- The plugin uses Gemini API, OpenAI Chat Completions API, and Anthropic Messages API directly
+- The plugin uses Gemini API, Copilot Chat Completions API, OpenAI Chat Completions API, and Anthropic Messages API directly
 - Lower temperature values (0.1-0.3) produce more consistent commit messages
 - Higher temperature values (0.5-0.8) produce more creative variations
 - The default model `gemini-2.5-flash-lite` provides excellent results at a very low cost
