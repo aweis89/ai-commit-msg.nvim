@@ -1,8 +1,7 @@
 local M = {}
 
-local function get_spinner()
-  local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
-  return spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+local function get_spinner(spinner_frames)
+  return spinner_frames[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner_frames + 1]
 end
 
 local function notify(msg, level, config)
@@ -24,19 +23,26 @@ function M.generate(config, callback)
   end)
 
   local spinner_timer
-  local notif_id = "ai-commit-msg"
+  local notify_record
+  local notify_called = false
 
   -- Start spinner if enabled
-  if config.spinner and config.notifications then
+  if config.spinner and type(config.spinner) == "table" and #config.spinner > 0 and config.notifications then
     local function update_spinner()
       if not spinner_timer or spinner_timer:is_closing() then
         return
       end
-      vim.notify(get_spinner() .. " Generating commit message...", vim.log.levels.INFO, {
-        id = notif_id,
+      local opts = {
         title = "AI Commit",
         timeout = false,
-      })
+        hide_from_history = notify_called,
+      }
+      if notify_record then
+        opts.replace = notify_record.id
+      end
+      notify_record =
+        vim.notify(get_spinner(config.spinner) .. " Generating commit message...", vim.log.levels.INFO, opts)
+      notify_called = true
     end
 
     spinner_timer = vim.uv.new_timer()
@@ -66,13 +72,16 @@ function M.generate(config, callback)
       vim.schedule(function()
         local error_msg = "Failed to get git diff: " .. (diff_res.stderr or "Unknown error")
         vim.notify("ai-commit-msg.nvim: " .. error_msg, vim.log.levels.ERROR)
-        -- Clear spinner notification with error message
+        -- Replace spinner notification with error message
         if config.notifications then
-          vim.notify("❌ " .. error_msg, vim.log.levels.ERROR, {
-            id = notif_id,
+          local opts = {
             title = "AI Commit",
             timeout = 3000,
-          })
+          }
+          if notify_record then
+            opts.replace = notify_record.id
+          end
+          vim.notify("❌ " .. error_msg, vim.log.levels.ERROR, opts)
         end
         if callback then
           callback(false, error_msg)
@@ -93,13 +102,16 @@ function M.generate(config, callback)
       vim.schedule(function()
         local error_msg = "No staged changes to commit"
         vim.notify("ai-commit-msg.nvim: " .. error_msg, vim.log.levels.WARN)
-        -- Clear spinner notification with warning message
+        -- Replace spinner notification with warning message
         if config.notifications then
-          vim.notify("⚠️  " .. error_msg, vim.log.levels.WARN, {
-            id = notif_id,
+          local opts = {
             title = "AI Commit",
             timeout = 3000,
-          })
+          }
+          if notify_record then
+            opts.replace = notify_record.id
+          end
+          vim.notify("⚠️  " .. error_msg, vim.log.levels.WARN, opts)
         end
         if callback then
           callback(false, error_msg)
@@ -125,13 +137,16 @@ function M.generate(config, callback)
       vim.schedule(function()
         if not success then
           vim.notify("ai-commit-msg.nvim: " .. result, vim.log.levels.ERROR)
-          -- Clear spinner notification with error message
+          -- Replace spinner notification with error message
           if config.notifications then
-            vim.notify("❌ " .. result, vim.log.levels.ERROR, {
-              id = notif_id,
+            local opts = {
               title = "AI Commit",
               timeout = 3000,
-            })
+            }
+            if notify_record then
+              opts.replace = notify_record.id
+            end
+            vim.notify("❌ " .. result, vim.log.levels.ERROR, opts)
           end
           if callback then
             callback(false, result)
@@ -153,13 +168,16 @@ function M.generate(config, callback)
           end
 
           vim.notify("ai-commit-msg.nvim: Generated message: " .. result:sub(1, 50) .. "...", vim.log.levels.DEBUG)
-          -- Clear spinner notification with success message
+          -- Replace spinner notification with success message
           if config.notifications then
-            vim.notify("✅ Commit message generated (" .. duration_cost_str .. ")", vim.log.levels.INFO, {
-              id = notif_id,
+            local opts = {
               title = "AI Commit",
               timeout = 2000,
-            })
+            }
+            if notify_record then
+              opts.replace = notify_record.id
+            end
+            vim.notify("✅ Commit message generated (" .. duration_cost_str .. ")", vim.log.levels.INFO, opts)
           end
           if callback then
             callback(true, result)

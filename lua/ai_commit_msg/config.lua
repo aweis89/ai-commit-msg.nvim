@@ -25,7 +25,7 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 ---@field providers table<string, ProviderConfig> Provider-specific configurations
 ---@field auto_push_prompt boolean Whether to prompt for push after commit
 ---@field pull_before_push { enabled: boolean, args: string[] } Whether and how to run `git pull` before pushing
----@field spinner boolean Whether to show a spinner while generating
+---@field spinner string[]|false Array of spinner frames to animate, or false to disable spinner
 ---@field notifications boolean Whether to show notifications
 ---@field context_lines number Number of surrounding lines to include in git diff
 ---@field keymaps table<string, string|false> Keymaps for commit buffer
@@ -40,7 +40,7 @@ M.default = {
     enabled = true,
     args = { "--rebase", "--autostash" },
   },
-  spinner = true,
+  spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
   notifications = true,
   context_lines = 10,
   keymaps = {
