@@ -26,8 +26,16 @@ function M.generate(config, callback)
   local notify_record
   local notify_called = false
 
+  -- Resolve spinner frames: true uses default, table uses custom, false disables
+  local spinner_frames = nil
+  if config.spinner == true then
+    spinner_frames = require("ai_commit_msg.config").DEFAULT_SPINNER_FRAMES
+  elseif type(config.spinner) == "table" and #config.spinner > 0 then
+    spinner_frames = config.spinner
+  end
+
   -- Start spinner if enabled
-  if config.spinner and type(config.spinner) == "table" and #config.spinner > 0 and config.notifications then
+  if spinner_frames and config.notifications then
     local function update_spinner()
       if not spinner_timer or spinner_timer:is_closing() then
         return
@@ -41,7 +49,7 @@ function M.generate(config, callback)
         opts.replace = notify_record.id
       end
       notify_record =
-        vim.notify(get_spinner(config.spinner) .. " Generating commit message...", vim.log.levels.INFO, opts)
+        vim.notify(get_spinner(spinner_frames) .. " Generating commit message...", vim.log.levels.INFO, opts)
       notify_called = true
     end
 
