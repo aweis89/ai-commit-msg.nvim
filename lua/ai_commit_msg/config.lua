@@ -42,7 +42,7 @@ M.default = {
   },
   spinner = true,
   notifications = true,
-  context_lines = 10,
+  context_lines = 5,
   keymaps = {
     quit = "q", -- Set to false to disable
   },
