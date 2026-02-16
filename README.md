@@ -133,8 +133,8 @@ require("ai_commit_msg").setup({
   -- Show notifications
   notifications = true,
   
-  -- Number of surrounding lines to include in git diff (default: 10)
-  context_lines = 10,
+  -- Number of surrounding lines to include in git diff (default: 5)
+  context_lines = 5,
   
   -- Cost display format ("compact", "verbose", or false to disable)
   cost_display = "compact",
@@ -361,6 +361,10 @@ git config --global core.editor nvim
 - If you don't specify `max_tokens`, the model will use its default limit
 - For Anthropic models, `max_tokens` is required by the API
   (defaults to 1000 if not specified)
+- For more predictable messages, keep `context_lines` modest (default `5`;
+  usually `3-10`) to reduce noisy, unchanged context in large diffs
+- If outputs are too verbose, prefer single-line defaults with a custom
+  `system_prompt` that only allows a body for complex or breaking changes
 
 ## License
 
