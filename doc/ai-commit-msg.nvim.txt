@@ -1,4 +1,4 @@
-*ai-commit-msg.nvim.txt*    For Neovim >= 0.8.0   Last change: 2026 January 20
+*ai-commit-msg.nvim.txt*   For Neovim >= 0.8.0   Last change: 2026 February 16
 
 ==============================================================================
 Table of Contents                       *ai-commit-msg.nvim-table-of-contents*
@@ -422,9 +422,9 @@ TIPS                              *ai-commit-msg.nvim-ai-commit-msg.nvim-tips*
 - For Anthropic models, `max_tokens` is required by the API
     (defaults to 1000 if not specified)
 - For more predictable messages, keep `context_lines` modest (default `5`;
-  usually `3-10`) to reduce noisy, unchanged context in large diffs
+    usually `3-10`) to reduce noisy, unchanged context in large diffs
 - If outputs are too verbose, prefer single-line defaults with a custom
-  `system_prompt` that only allows a body for complex or breaking changes
+    `system_prompt` that only allows a body for complex or breaking changes
 
 
 LICENSE                        *ai-commit-msg.nvim-ai-commit-msg.nvim-license*
