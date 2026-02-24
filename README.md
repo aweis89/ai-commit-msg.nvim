@@ -280,6 +280,7 @@ Note on quality vs cost: Using OpenAI `gpt-5-mini` or `gpt-4.1-mini` (faster) ge
 - `:AiCommitMsgDisable` - Disable automatic commit message generation
 - `:AiCommitMsgEnable` - Enable automatic commit message generation
 - `:AiCommitMsgAllModels` - Generate commit messages across all configured provider models for your staged diff; opens a buffer with per-model results, timing, and (when pricing is configured) estimated cost — useful for model selection
+- `:AiCommitMsgDebug` - Toggle debug mode. When enabled, shows verbose `DEBUG`-level notifications useful for troubleshooting
 - `:AiCommitMsgTestMatrix [diffs_dir] [out_file]` - Run a prompt/model matrix against `.diff` fixtures. Set `AI_COMMIT_MSG_DRY_RUN=1` to only collect prompt sizes without API calls; otherwise writes JSONL lines to `out_file` if provided
 
 ## Choosing a Model
