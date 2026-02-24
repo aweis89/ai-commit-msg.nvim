@@ -5,9 +5,9 @@ local augroup = nil
 function M.setup(config)
   augroup = vim.api.nvim_create_augroup(augroup_name, { clear = true })
 
-  vim.api.nvim_create_autocmd("BufWinEnter", {
+  vim.api.nvim_create_autocmd("FileType", {
     group = augroup,
-    pattern = "COMMIT_EDITMSG",
+    pattern = "gitcommit",
     callback = function(arg)
       vim.notify("ai-commit-msg.nvim: COMMIT_EDITMSG buffer detected", vim.log.levels.DEBUG)
 
