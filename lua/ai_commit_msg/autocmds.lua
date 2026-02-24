@@ -1,15 +1,16 @@
 local M = {}
 local augroup_name = "ai_commit_msg"
 local augroup = nil
+local cfg_notify = require("ai_commit_msg.config").notify
 
 function M.setup(config)
   augroup = vim.api.nvim_create_augroup(augroup_name, { clear = true })
 
-  vim.api.nvim_create_autocmd("BufWinEnter", {
+  vim.api.nvim_create_autocmd("FileType", {
     group = augroup,
-    pattern = "COMMIT_EDITMSG",
+    pattern = "gitcommit",
     callback = function(arg)
-      vim.notify("ai-commit-msg.nvim: COMMIT_EDITMSG buffer detected", vim.log.levels.DEBUG)
+      cfg_notify("ai-commit-msg.nvim: gitcommit buffer detected", vim.log.levels.DEBUG)
 
       -- Setup keymaps
       if config.keymaps.quit then
@@ -36,7 +37,7 @@ function M.setup(config)
 
               -- Only prompt if HEAD changed (meaning a commit was made)
               if head_after == head_before or head_after == "" then
-                vim.notify(
+                cfg_notify(
                   "ai-commit-msg.nvim: No commit was created (empty message or cancelled)",
                   vim.log.levels.DEBUG
                 )
@@ -59,11 +60,11 @@ function M.setup(config)
                         if exit_code == 0 then
                           vim.schedule(function()
                             vim.api.nvim_buf_delete(term_buf, { force = true })
-                            vim.notify("Push successful", vim.log.levels.INFO)
+                            cfg_notify("Push successful", vim.log.levels.INFO)
                           end)
                         else
                           vim.schedule(function()
-                            vim.notify("Push failed - check terminal for details", vim.log.levels.ERROR)
+                            cfg_notify("Push failed - check terminal for details", vim.log.levels.ERROR)
                           end)
                         end
                       end,
@@ -72,7 +73,7 @@ function M.setup(config)
                   end
 
                   if pull_enabled then
-                    vim.notify("Pulling latest changes before push...", vim.log.levels.INFO)
+                    cfg_notify("Pulling latest changes before push...", vim.log.levels.INFO)
                     local cmd = { "git", "pull" }
                     for _, a in ipairs(pull_args) do
                       table.insert(cmd, a)
@@ -83,7 +84,7 @@ function M.setup(config)
                           do_push()
                         else
                           local err = pull_obj.stderr or pull_obj.stdout or "git pull failed"
-                          vim.notify("git pull failed; aborting push: " .. vim.fn.trim(err), vim.log.levels.ERROR)
+                          cfg_notify("git pull failed; aborting push: " .. vim.fn.trim(err), vim.log.levels.ERROR)
                         end
                       end)
                     end)

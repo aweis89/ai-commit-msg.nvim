@@ -116,4 +116,29 @@ M.default = {
   },
 }
 
+--- Notify helper that respects the notifications config.
+--- DEBUG messages only show when vim.g.ai_commit_msg_debug is set.
+--- ERROR/WARN always show. INFO is gated by notifications config.
+---@param msg string
+---@param level number|nil vim.log.levels value
+---@param opts table|nil extra options for vim.notify
+function M.notify(msg, level, opts)
+  if level == vim.log.levels.DEBUG then
+    if vim.g.ai_commit_msg_debug then
+      vim.notify(msg, level, opts)
+    end
+    return
+  end
+  if level == vim.log.levels.ERROR or level == vim.log.levels.WARN then
+    vim.notify(msg, level, opts)
+    return
+  end
+  -- INFO: respect notifications config
+  local ok, plugin = pcall(require, "ai_commit_msg")
+  if ok and plugin.config and plugin.config.notifications == false then
+    return
+  end
+  vim.notify(msg, level, opts)
+end
+
 return M

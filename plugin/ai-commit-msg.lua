@@ -8,7 +8,9 @@ if vim.g.loaded_ai_commit_msg == 1 then
 end
 vim.g.loaded_ai_commit_msg = 1
 
-vim.notify("ai-commit-msg.nvim: Plugin loaded", vim.log.levels.DEBUG)
+local cfg_notify = require("ai_commit_msg.config").notify
+
+cfg_notify("ai-commit-msg.nvim: Plugin loaded", vim.log.levels.DEBUG)
 
 -- Create user commands
 vim.api.nvim_create_user_command("AiCommitMsg", function()
@@ -21,24 +23,26 @@ end, { desc = "Generate AI commit message" })
 
 vim.api.nvim_create_user_command("AiCommitMsgDisable", function()
   require("ai_commit_msg").disable()
-  vim.notify("AI Commit Message disabled")
+  cfg_notify("AI Commit Message disabled", vim.log.levels.INFO)
 end, { desc = "Disable AI commit message generation" })
 
 vim.api.nvim_create_user_command("AiCommitMsgEnable", function()
   require("ai_commit_msg").enable()
-  vim.notify("AI Commit Message enabled")
+  cfg_notify("AI Commit Message enabled", vim.log.levels.INFO)
 end, { desc = "Enable AI commit message generation" })
 
 vim.api.nvim_create_user_command("AiCommitMsgDebug", function()
+  vim.g.ai_commit_msg_debug = not vim.g.ai_commit_msg_debug
+  vim.notify("ai-commit-msg.nvim debug: " .. (vim.g.ai_commit_msg_debug and "ON" or "OFF"), vim.log.levels.INFO)
   local plugin = require("ai_commit_msg")
-  vim.notify("Plugin config: " .. vim.inspect(plugin.config), vim.log.levels.INFO)
+  cfg_notify("Plugin config: " .. vim.inspect(plugin.config), vim.log.levels.INFO)
 
   -- Check if autocmds are registered
   local autocmds = vim.api.nvim_get_autocmds({ group = "ai_commit_msg" })
   if #autocmds > 0 then
-    vim.notify("Autocmds registered: " .. vim.inspect(autocmds), vim.log.levels.INFO)
+    cfg_notify("Autocmds registered: " .. vim.inspect(autocmds), vim.log.levels.INFO)
   else
-    vim.notify("No autocmds registered!", vim.log.levels.WARN)
+    cfg_notify("No autocmds registered!", vim.log.levels.WARN)
   end
 end, { desc = "Debug AI commit message plugin" })
 
@@ -58,9 +62,9 @@ vim.api.nvim_create_user_command("AiCommitMsgTestMatrix", function(opts)
   })
 
   if dry then
-    vim.notify("Dry-run: collected " .. tostring(#results) .. " prompt stats", vim.log.levels.INFO)
+    cfg_notify("Dry-run: collected " .. tostring(#results) .. " prompt stats", vim.log.levels.INFO)
   else
-    vim.notify("Matrix run complete: " .. tostring(#results) .. " cases", vim.log.levels.INFO)
+    cfg_notify("Matrix run complete: " .. tostring(#results) .. " cases", vim.log.levels.INFO)
   end
 end, {
   desc = "Run prompt/model matrix over .diff fixtures",
@@ -86,7 +90,7 @@ vim.api.nvim_create_user_command("AiCommitMsgAllModels", function()
   vim.system(git_cmd, {}, function(diff_res)
     if diff_res.code ~= 0 then
       vim.schedule(function()
-        vim.notify("Failed to get git diff: " .. (diff_res.stderr or "Unknown error"), vim.log.levels.ERROR)
+        cfg_notify("Failed to get git diff: " .. (diff_res.stderr or "Unknown error"), vim.log.levels.ERROR)
       end)
       return
     end
@@ -94,7 +98,7 @@ vim.api.nvim_create_user_command("AiCommitMsgAllModels", function()
     local diff = diff_res.stdout or ""
     if diff == "" then
       vim.schedule(function()
-        vim.notify("No staged changes to commit", vim.log.levels.WARN)
+        cfg_notify("No staged changes to commit", vim.log.levels.WARN)
       end)
       return
     end
@@ -147,7 +151,7 @@ vim.api.nvim_create_user_command("AiCommitMsgAllModels", function()
       vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
       vim.api.nvim_buf_set_option(buf, "filetype", "gitcommit")
       vim.api.nvim_set_current_buf(buf)
-      vim.notify("All-models results buffer opened", vim.log.levels.INFO)
+      cfg_notify("All-models results buffer opened", vim.log.levels.INFO)
     end)
   end)
 end, { desc = "Generate commit messages across all models for staged diff" })
