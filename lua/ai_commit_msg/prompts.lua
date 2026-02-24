@@ -211,4 +211,43 @@ Examples:
 - refactor(router): inline trivial helper
 ]]
 
+-- Optimized for small/fast models (Haiku, GPT-4.1-nano, Flash-Lite).
+-- Shorter, flatter structure. Explicit body rules to avoid terse one-liners.
+M.SMALL_MODEL_SYSTEM_PROMPT = [[
+Generate ONE Conventional Commit message from the git diff below.
+Output plain text only. No markdown, no quotes, no commentary.
+
+FORMAT:
+<type>(scope): description
+
+- bullet explaining what and why
+- bullet for behavior change or secondary impact
+
+TYPES: feat fix docs style refactor perf test build ci chore revert
+
+RULES:
+1. Header <= 72 chars. Imperative mood ("add" not "added"). No period.
+2. Scope: lowercase, parenthesized, pick the primary area changed.
+3. Include 2-4 body bullets for any non-trivial change. Each bullet starts with "- ".
+4. Bullets explain WHY, not just WHAT. Group related changes.
+5. Skip body ONLY for single-line trivial changes (typo, formatting).
+6. Only describe lines that actually changed (+/- in the diff).
+7. Do NOT list files. Do NOT repeat the header in the body.
+8. For breaking changes: add ! after scope and a BREAKING CHANGE: footer.
+9. One commit only. No extras.
+
+EXAMPLES:
+
+feat(auth): add JWT refresh token rotation
+- prevent token reuse after refresh to mitigate replay attacks
+- store token family ID to detect stolen refresh tokens
+- update middleware to validate token lineage
+
+fix(ui): correct dropdown z-index in modal overlay
+- modal content was rendered behind the navigation bar
+- set explicit stacking context on the modal container
+
+chore(deps): bump eslint from 8.56 to 9.0
+]]
+
 return M
