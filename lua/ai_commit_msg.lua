@@ -64,6 +64,20 @@ function M.format_cost(cost_info, format)
   end
 end
 
+-- Small model patterns: auto-select SMALL_MODEL_SYSTEM_PROMPT when the user
+-- hasn't explicitly overridden system_prompt and the model name matches.
+local SMALL_MODEL_PATTERNS = { "haiku", "nano", "lite" }
+
+local function is_small_model(model)
+  local model_lower = model:lower()
+  for _, pattern in ipairs(SMALL_MODEL_PATTERNS) do
+    if model_lower:find(pattern, 1, true) then
+      return true
+    end
+  end
+  return false
+end
+
 -- Get the active provider configuration
 function M.get_active_provider_config()
   local provider_name = M.config.provider
@@ -73,9 +87,16 @@ function M.get_active_provider_config()
     error("No configuration found for provider: " .. tostring(provider_name))
   end
 
-  -- Return a merged config with provider-specific settings
   local active_config = vim.tbl_deep_extend("force", {}, provider_config)
   active_config.provider = provider_name
+
+  -- Auto-select small model prompt if the user hasn't overridden system_prompt
+  local default_provider = config_mod.default.providers[provider_name]
+  local uses_default_prompt = default_provider
+    and active_config.system_prompt == default_provider.system_prompt
+  if uses_default_prompt and active_config.model and is_small_model(active_config.model) then
+    active_config.system_prompt = require("ai_commit_msg.prompts").SMALL_MODEL_SYSTEM_PROMPT
+  end
 
   return active_config
 end

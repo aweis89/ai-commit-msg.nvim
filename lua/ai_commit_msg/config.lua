@@ -21,7 +21,7 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 
 ---@class AiCommitMsgConfig
 ---@field enabled boolean Whether to enable the plugin
----@field provider string AI provider to use ("openai", "anthropic", or "gemini")
+---@field provider string AI provider to use ("openai", "anthropic", "gemini", "copilot", or "claude_code")
 ---@field providers table<string, ProviderConfig> Provider-specific configurations
 ---@field auto_push_prompt boolean Whether to prompt for push after commit
 ---@field pull_before_push { enabled: boolean, args: string[] } Whether and how to run `git pull` before pushing
@@ -109,6 +109,12 @@ M.default = {
     copilot = {
       model = "gpt-4.1",
       max_tokens = nil,
+      prompt = DEFAULT_PROMPT,
+      system_prompt = DEFAULT_SYSTEM_PROMPT,
+      pricing = {},
+    },
+    claude_code = {
+      model = "sonnet",
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
       pricing = {},
