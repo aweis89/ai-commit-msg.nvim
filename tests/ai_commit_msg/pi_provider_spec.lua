@@ -1,17 +1,20 @@
 describe("pi provider", function()
   local pi_provider
   local original_notify
+  local original_schedule
   local original_system
 
   before_each(function()
     package.loaded["ai_commit_msg.providers.pi"] = nil
     pi_provider = require("ai_commit_msg.providers.pi")
     original_notify = vim.notify
+    original_schedule = vim.schedule
     original_system = vim.system
   end)
 
   after_each(function()
     vim.notify = original_notify
+    vim.schedule = original_schedule
     vim.system = original_system
   end)
 
@@ -20,9 +23,13 @@ describe("pi provider", function()
     local captured_options
     local notification
     local notification_level
+    local scheduled_notification
     vim.notify = function(message, level)
       notification = message
       notification_level = level
+    end
+    vim.schedule = function(callback)
+      scheduled_notification = callback
     end
     vim.system = function(command, options, callback)
       captured_command = command
@@ -71,6 +78,9 @@ describe("pi provider", function()
     }, captured_command)
     assert.equals("Changes:\n+new line", captured_options.stdin)
     assert.is_true(captured_options.text)
+    assert.is_nil(notification)
+    assert.is_function(scheduled_notification)
+    scheduled_notification()
     assert.equals(
       "ai-commit-msg.nvim: Pi CLI selection: model=gpt-5-mini, provider=github-copilot, thinking=low",
       notification
