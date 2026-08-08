@@ -27,6 +27,13 @@ describe("providers", function()
       assert.is_function(provider.call_api)
     end)
 
+    it("returns pi provider when configured", function()
+      local config = { provider = "pi" }
+      local provider = providers.get_provider(config)
+      assert.is_not_nil(provider)
+      assert.is_function(provider.call_api)
+    end)
+
     it("throws error for unsupported provider", function()
       local config = { provider = "unsupported" }
       assert.has_error(function()

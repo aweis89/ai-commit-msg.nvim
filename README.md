@@ -15,11 +15,11 @@ perfect commit message.
 
 ## Features
 
-- 🤖 Automatically generates commit messages using Gemini, OpenAI, Anthropic, or GitHub Copilot APIs
+- 🤖 Automatically generates commit messages using the Pi CLI or Gemini, OpenAI, Anthropic, and GitHub Copilot APIs
   when you run `git commit -v`
 - 🎯 Works from terminal or within Neovim (using vim-fugitive)
 - 🤝 Non-intrusive - if you start typing, AI suggestions are added as comments instead
-- 🔑 Uses `GEMINI_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY` environment variables for authentication
+- 🔑 Reuses your Pi login or provider API key environment variables for authentication
 - ⚙️ Configurable model, temperature, and max tokens
 - 🔄 Optional push prompt after successful commits
 - ⬇️⬆️ Pull before push to reduce rejections (configurable with args)
@@ -77,7 +77,14 @@ use {
 
 ## Prerequisites
 
-1. Set your AI provider's API key as an environment variable:
+For the Pi provider, install and authenticate the [`pi` CLI](https://pi.dev):
+
+```bash
+pi
+/login
+```
+
+For direct API providers, set the corresponding environment variable:
 
 **For Gemini (default, best value):**
 
@@ -91,7 +98,7 @@ export GEMINI_API_KEY="your-api-key-here"
 export OPENAI_API_KEY="your-api-key-here"
 ```
 
-**For Anthropic:**
+**For GitHub Copilot:**
 
 ```bash
 export COPILOT_TOKEN="your-github-copilot-token-here"
@@ -103,7 +110,7 @@ export COPILOT_TOKEN="your-github-copilot-token-here"
 export ANTHROPIC_API_KEY="your-api-key-here"
 ```
 
-1. Configure Neovim as your Git editor:
+Configure Neovim as your Git editor:
 
 ```bash
 git config --global core.editor nvim
@@ -116,7 +123,7 @@ require("ai_commit_msg").setup({
   -- Enable/disable the plugin
   enabled = true,
   
-  -- AI provider to use ("gemini", "openai", "anthropic", or "copilot")
+  -- AI provider to use ("pi", "gemini", "openai", "anthropic", or "copilot")
   provider = "gemini",
   
   -- Whether to prompt for push after commit
@@ -184,16 +191,44 @@ require("ai_commit_msg").setup({
         },
       },
     },
-  },
-  copilot = {
-    model = "gpt-5-mini",
-    max_tokens = 10000,
-    reasoning_effort = "minimal",
+    copilot = {
+      model = "gpt-5-mini",
+      max_tokens = 10000,
+      reasoning_effort = "minimal",
+    },
+    pi = {
+      executable = "pi",
+      -- Omit provider/model to use Pi's configured defaults.
+      cli_provider = nil,
+      model = nil,
+      thinking = nil,
+      args = {}, -- Additional Pi CLI arguments
+    },
   },
 })
 ```
 
 ## Example Configurations
+
+### Use the Pi CLI
+
+```lua
+require("ai_commit_msg").setup({
+  provider = "pi",
+  providers = {
+    pi = {
+      -- Optional; omit these to use Pi's configured defaults.
+      cli_provider = "github-copilot",
+      model = "gpt-5-mini",
+      thinking = "low",
+    },
+  },
+})
+```
+
+The plugin invokes Pi in non-interactive, ephemeral, tool-free mode, ignores
+project-local Pi resources, and sends the staged diff over standard input.
+Authentication is handled by your existing Pi login.
 
 ### Switch to OpenAI
 
@@ -342,7 +377,8 @@ git config --global core.editor nvim
 ## Requirements
 
 - Neovim >= 0.7.0
-- AI provider API key:
+- Pi CLI login or an AI provider API key:
+  - Pi: Authenticate with `/login` in the Pi CLI
   - Gemini: Set `GEMINI_API_KEY` environment variable (default, best value)
   - OpenAI: Set `OPENAI_API_KEY` environment variable
   - Anthropic: Set `ANTHROPIC_API_KEY` environment variable
@@ -352,7 +388,7 @@ git config --global core.editor nvim
 
 ## Tips
 
-- The plugin uses Gemini API, OpenAI Chat Completions API, and Anthropic Messages API directly
+- The Pi provider shells out to `pi --print`; other providers call their APIs directly
 - Lower temperature values (0.1-0.3) produce more consistent commit messages
 - Higher temperature values (0.5-0.8) produce more creative variations
 - The default model `gemini-2.5-flash-lite` provides excellent results at a very low cost

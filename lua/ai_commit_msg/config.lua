@@ -5,7 +5,7 @@ local DEFAULT_PROMPT = [[{diff}]]
 local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PROMPT
 
 ---@class ProviderConfig
----@field model string Model to use for this provider
+---@field model string|nil Model to use for this provider
 ---@field temperature number|nil Temperature for the model (0.0 to 1.0)
 ---@field max_tokens number|nil Maximum tokens in the response
 ---@field prompt string Prompt to send to the AI
@@ -18,10 +18,14 @@ local DEFAULT_SYSTEM_PROMPT = require("ai_commit_msg.prompts").DEFAULT_SYSTEM_PR
 ---@field pricing table|nil Pricing information for cost calculation. Supports:
 ---  - Flat table: { input_per_million, output_per_million } (backwards compatible)
 ---  - Map keyed by model: { ["model-name"] = { input_per_million, output_per_million }, default = { ... } }
+---@field executable string|nil Executable used by command-line providers
+---@field cli_provider string|nil Pi provider passed to `pi --provider`
+---@field thinking string|nil Pi thinking level
+---@field args string[]|nil Additional command-line arguments
 
 ---@class AiCommitMsgConfig
 ---@field enabled boolean Whether to enable the plugin
----@field provider string AI provider to use ("openai", "anthropic", or "gemini")
+---@field provider string AI provider to use ("openai", "anthropic", "gemini", "copilot", or "pi")
 ---@field providers table<string, ProviderConfig> Provider-specific configurations
 ---@field auto_push_prompt boolean Whether to prompt for push after commit
 ---@field pull_before_push { enabled: boolean, args: string[] } Whether and how to run `git pull` before pushing
@@ -109,6 +113,16 @@ M.default = {
     copilot = {
       model = "gpt-4.1",
       max_tokens = nil,
+      prompt = DEFAULT_PROMPT,
+      system_prompt = DEFAULT_SYSTEM_PROMPT,
+      pricing = {},
+    },
+    pi = {
+      executable = "pi",
+      model = nil,
+      cli_provider = nil,
+      thinking = nil,
+      args = {},
       prompt = DEFAULT_PROMPT,
       system_prompt = DEFAULT_SYSTEM_PROMPT,
       pricing = {},
