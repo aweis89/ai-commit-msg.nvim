@@ -228,7 +228,9 @@ require("ai_commit_msg").setup({
 
 The plugin invokes Pi in non-interactive, ephemeral, tool-free mode, ignores
 project-local Pi resources, and sends the staged diff over standard input.
-Authentication is handled by your existing Pi login.
+Authentication is handled by your existing Pi login. The effective Pi selection
+is appended to `stdpath("state") .. "/ai-commit-msg.log"` without displaying a
+notification.
 
 ### Switch to OpenAI
 

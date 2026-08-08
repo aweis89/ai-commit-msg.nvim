@@ -1,35 +1,37 @@
 describe("pi provider", function()
   local pi_provider
-  local original_notify
   local original_schedule
   local original_system
+  local original_writefile
 
   before_each(function()
     package.loaded["ai_commit_msg.providers.pi"] = nil
     pi_provider = require("ai_commit_msg.providers.pi")
-    original_notify = vim.notify
     original_schedule = vim.schedule
     original_system = vim.system
+    original_writefile = vim.fn.writefile
   end)
 
   after_each(function()
-    vim.notify = original_notify
     vim.schedule = original_schedule
     vim.system = original_system
+    vim.fn.writefile = original_writefile
   end)
 
   it("passes the prompt to Pi over stdin and logs its model selection", function()
     local captured_command
     local captured_options
-    local notification
-    local notification_level
-    local scheduled_notification
-    vim.notify = function(message, level)
-      notification = message
-      notification_level = level
+    local log_flags
+    local log_lines
+    local log_path
+    local scheduled_log
+    vim.fn.writefile = function(lines, path, flags)
+      log_flags = flags
+      log_lines = lines
+      log_path = path
     end
     vim.schedule = function(callback)
-      scheduled_notification = callback
+      scheduled_log = callback
     end
     vim.system = function(command, options, callback)
       captured_command = command
@@ -78,14 +80,16 @@ describe("pi provider", function()
     }, captured_command)
     assert.equals("Changes:\n+new line", captured_options.stdin)
     assert.is_true(captured_options.text)
-    assert.is_nil(notification)
-    assert.is_function(scheduled_notification)
-    scheduled_notification()
     assert.equals(
       "ai-commit-msg.nvim: Pi CLI selection: model=gpt-5-mini, provider=github-copilot, thinking=low",
-      notification
+      pi_provider.last_selection
     )
-    assert.equals(vim.log.levels.DEBUG, notification_level)
+    assert.is_nil(log_lines)
+    assert.is_function(scheduled_log)
+    scheduled_log()
+    assert.same({ pi_provider.last_selection }, log_lines)
+    assert.equals(vim.fn.stdpath("state") .. "/ai-commit-msg.log", log_path)
+    assert.equals("a", log_flags)
   end)
 
   it("reports Pi process failures", function()

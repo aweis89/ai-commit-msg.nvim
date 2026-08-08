@@ -64,8 +64,10 @@ function M.call_api(config, diff, callback)
     config.cli_provider or "<default>",
     config.thinking or "<default>"
   )
+  M.last_selection = selection_message
   vim.schedule(function()
-    vim.notify(selection_message, vim.log.levels.DEBUG)
+    local log_path = vim.fn.stdpath("state") .. "/ai-commit-msg.log"
+    pcall(vim.fn.writefile, { selection_message }, log_path, "a")
   end)
 
   vim.system(command, { stdin = prompt, text = true }, function(result)
