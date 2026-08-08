@@ -1,20 +1,29 @@
 describe("pi provider", function()
   local pi_provider
+  local original_notify
   local original_system
 
   before_each(function()
     package.loaded["ai_commit_msg.providers.pi"] = nil
     pi_provider = require("ai_commit_msg.providers.pi")
+    original_notify = vim.notify
     original_system = vim.system
   end)
 
   after_each(function()
+    vim.notify = original_notify
     vim.system = original_system
   end)
 
-  it("passes the prompt to Pi over stdin", function()
+  it("passes the prompt to Pi over stdin and logs its model selection", function()
     local captured_command
     local captured_options
+    local notification
+    local notification_level
+    vim.notify = function(message, level)
+      notification = message
+      notification_level = level
+    end
     vim.system = function(command, options, callback)
       captured_command = command
       captured_options = options
@@ -62,6 +71,11 @@ describe("pi provider", function()
     }, captured_command)
     assert.equals("Changes:\n+new line", captured_options.stdin)
     assert.is_true(captured_options.text)
+    assert.equals(
+      "ai-commit-msg.nvim: Pi CLI selection: model=gpt-5-mini, provider=github-copilot, thinking=low",
+      notification
+    )
+    assert.equals(vim.log.levels.DEBUG, notification_level)
   end)
 
   it("reports Pi process failures", function()

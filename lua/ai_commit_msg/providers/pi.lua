@@ -58,6 +58,16 @@ function M.call_api(config, diff, callback)
     vim.list_extend(command, config.args)
   end
 
+  vim.notify(
+    string.format(
+      "ai-commit-msg.nvim: Pi CLI selection: model=%s, provider=%s, thinking=%s",
+      config.model or "<default>",
+      config.cli_provider or "<default>",
+      config.thinking or "<default>"
+    ),
+    vim.log.levels.DEBUG
+  )
+
   vim.system(command, { stdin = prompt, text = true }, function(result)
     if result.code ~= 0 then
       local error_message = vim.trim(result.stderr or "")
