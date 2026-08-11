@@ -38,7 +38,7 @@ function M.call_api(config, diff, callback)
   end
 
   vim.schedule(function()
-    vim.notify("ai-commit-msg.nvim: Copilot prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
+    require("ai_commit_msg.config").notify("ai-commit-msg.nvim: Copilot prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
   end)
 
   local payload_data = {

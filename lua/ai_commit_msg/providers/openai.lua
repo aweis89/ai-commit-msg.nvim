@@ -36,7 +36,7 @@ function M.call_api(config, diff, callback)
   end
 
   vim.schedule(function()
-    vim.notify("ai-commit-msg.nvim: Prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
+    require("ai_commit_msg.config").notify("ai-commit-msg.nvim: Prompt length: " .. #prompt .. " chars", vim.log.levels.DEBUG)
   end)
 
   local payload_data = {
@@ -99,7 +99,7 @@ function M.call_api(config, diff, callback)
     end
 
     vim.schedule(function()
-      vim.notify("ai-commit-msg.nvim: Full API response: " .. vim.inspect(response), vim.log.levels.DEBUG)
+      require("ai_commit_msg.config").notify("ai-commit-msg.nvim: Full API response: " .. vim.inspect(response), vim.log.levels.DEBUG)
     end)
 
     if response.choices and response.choices[1] and response.choices[1].message then

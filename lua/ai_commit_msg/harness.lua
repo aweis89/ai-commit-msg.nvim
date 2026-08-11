@@ -101,7 +101,7 @@ function M.run_matrix(opts)
   local diff_files = list_diff_files(diffs_dir)
 
   if #diff_files == 0 then
-    vim.notify("No .diff files found in " .. diffs_dir, vim.log.levels.WARN)
+    config_mod.notify("No .diff files found in " .. diffs_dir, vim.log.levels.WARN)
     return
   end
 
@@ -122,13 +122,13 @@ function M.run_matrix(opts)
   for _, diff_path in ipairs(diff_files) do
     local diff, err = read_file(diff_path)
     if not diff then
-      vim.notify(err, vim.log.levels.ERROR)
+      config_mod.notify(err, vim.log.levels.ERROR)
     else
       local tiny = is_tiny_diff(diff, opts.tiny)
       for _, pname in ipairs(provider_list) do
         local pcfg = defaults.providers[pname]
         if not pcfg then
-          vim.notify("Unknown provider in matrix: " .. tostring(pname), vim.log.levels.WARN)
+          config_mod.notify("Unknown provider in matrix: " .. tostring(pname), vim.log.levels.WARN)
         else
           local models = get_models_for_provider(pcfg)
           for _, model in ipairs(models) do
